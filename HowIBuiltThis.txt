@@ -1,0 +1,6 @@
+How did I make this project?
+
+1. make directory URL-Shortner -> Frontend, Backend
+2. cd Backend -> npm init -> npm install express,nodemon,dotenv
+3. in package.json 1) "scripts" add "dev":"nodemon src/app.js" 2) replace "main":"index.js" with "main":"app.js" since our main file is app.js
+4. make basic app.js and do "npm run dev" in the backend folder. you might  need to add "type": "module" in package.json if you face such error
