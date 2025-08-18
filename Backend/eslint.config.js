@@ -11,6 +11,7 @@ export default tseslint.config(
       sourceType: "module"
     },
     rules: {
+      "no-undef": "off",
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-unused-vars": [
