@@ -3,12 +3,7 @@ import { env } from "@/config/env.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { sendSuccess } from "@/utils/http-response.js";
 import { buildClickContext } from "@/modules/links/request-context.js";
-import {
-  analyticsParamSchema,
-  analyticsQuerySchema,
-  codeParamSchema,
-  createLinkSchema
-} from "@/modules/links/link.schemas.js";
+import type { AnalyticsQuery, CreateLinkInput } from "@/modules/links/link.schemas.js";
 import {
   createLink,
   getAnalytics,
@@ -23,9 +18,13 @@ function getAdminKey(req: Request) {
   return headerKey || queryKey;
 }
 
-export const createLinkController = asyncHandler(async (req: Request, res: Response) => {
-  const input = createLinkSchema.parse(req.body);
-  const { link, adminKey, shortUrl } = await createLink(input);
+type CodeParams = { code: string };
+type CreateLinkRequest = Request<Record<string, never>, unknown, CreateLinkInput>;
+type AnalyticsRequest = Request<CodeParams, unknown, unknown, AnalyticsQuery>;
+type RedirectRequest = Request<CodeParams>;
+
+export const createLinkController = asyncHandler(async (req: CreateLinkRequest, res: Response) => {
+  const { link, adminKey, shortUrl } = await createLink(req.body);
 
   sendSuccess(
     res,
@@ -39,17 +38,14 @@ export const createLinkController = asyncHandler(async (req: Request, res: Respo
   );
 });
 
-export const analyticsController = asyncHandler(async (req: Request, res: Response) => {
-  const params = analyticsParamSchema.parse(req.params);
-  const query = analyticsQuerySchema.parse(req.query);
-  const analytics = await getAnalytics(params.code, getAdminKey(req), query);
+export const analyticsController = asyncHandler(async (req: AnalyticsRequest, res: Response) => {
+  const analytics = await getAnalytics(req.params.code, getAdminKey(req), req.query);
 
   sendSuccess(res, analytics);
 });
 
-export const redirectController = asyncHandler(async (req: Request, res: Response) => {
-  const params = codeParamSchema.parse(req.params);
-  const link = await getRedirectLink(params.code);
+export const redirectController = asyncHandler(async (req: RedirectRequest, res: Response) => {
+  const link = await getRedirectLink(req.params.code);
   const clickContext = buildClickContext(req);
 
   void recordClick(link.id, clickContext).catch((error) => {
