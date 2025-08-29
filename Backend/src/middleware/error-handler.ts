@@ -10,7 +10,8 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
       error: {
         code: "VALIDATION_ERROR",
         message: "Request validation failed.",
-        details: error.flatten()
+        details: error.flatten(),
+        requestId: req.requestId
       }
     });
     return;
@@ -20,7 +21,8 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
     res.status(error.statusCode).json({
       error: {
         code: error.code,
-        message: error.expose ? error.message : "Unexpected server error."
+        message: error.expose ? error.message : "Unexpected server error.",
+        requestId: req.requestId
       }
     });
     return;
@@ -30,7 +32,8 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
     res.status(409).json({
       error: {
         code: "CONFLICT",
-        message: "A resource with this unique value already exists."
+        message: "A resource with this unique value already exists.",
+        requestId: req.requestId
       }
     });
     return;
@@ -41,7 +44,8 @@ export const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
   res.status(500).json({
     error: {
       code: "INTERNAL_SERVER_ERROR",
-      message: "Unexpected server error."
+      message: "Unexpected server error.",
+      requestId: req.requestId
     }
   });
 };
