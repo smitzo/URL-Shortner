@@ -20,7 +20,7 @@ function getAdminKey(req: Request) {
 
 type CodeParams = { code: string };
 type CreateLinkRequest = Request<Record<string, never>, unknown, CreateLinkInput>;
-type AnalyticsRequest = Request<CodeParams, unknown, unknown, AnalyticsQuery>;
+type AnalyticsRequest = Request<CodeParams>;
 type RedirectRequest = Request<CodeParams>;
 
 export const createLinkController = asyncHandler(async (req: CreateLinkRequest, res: Response) => {
@@ -39,7 +39,8 @@ export const createLinkController = asyncHandler(async (req: CreateLinkRequest, 
 });
 
 export const analyticsController = asyncHandler(async (req: AnalyticsRequest, res: Response) => {
-  const analytics = await getAnalytics(req.params.code, getAdminKey(req), req.query);
+  const query = req.query as unknown as AnalyticsQuery;
+  const analytics = await getAnalytics(req.params.code, getAdminKey(req), query);
 
   sendSuccess(res, analytics);
 });

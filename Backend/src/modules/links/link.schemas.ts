@@ -19,11 +19,26 @@ export const codeParamSchema = z.object({
   code: z.string().trim().regex(customCodePattern)
 });
 
-export const analyticsQuerySchema = z.object({
-  adminKey: z.string().min(24).optional(),
-  from: z.string().datetime().optional(),
-  to: z.string().datetime().optional()
-});
+export const analyticsQuerySchema = z
+  .object({
+    adminKey: z.string().min(24).optional(),
+    from: z.string().datetime().optional(),
+    to: z.string().datetime().optional(),
+    limit: z.coerce.number().int().min(1).max(100).default(25)
+  })
+  .superRefine((value, context) => {
+    if (!value.from || !value.to) {
+      return;
+    }
+
+    if (new Date(value.from).getTime() > new Date(value.to).getTime()) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["from"],
+        message: "The from date must be before the to date."
+      });
+    }
+  });
 
 export const analyticsParamSchema = z.object({
   code: z.string().trim().regex(customCodePattern)
