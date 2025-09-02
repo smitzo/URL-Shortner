@@ -18,7 +18,8 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(120),
   CREATE_LINK_LIMIT_MAX: z.coerce.number().int().positive().default(20),
-  REDIRECT_CACHE_SECONDS: z.coerce.number().int().nonnegative().default(300)
+  REDIRECT_CACHE_SECONDS: z.coerce.number().int().nonnegative().default(300),
+  IP_HASH_SALT: z.string().min(16).default("development-ip-hash-salt")
 });
 
 const parsed = envSchema.safeParse(process.env);

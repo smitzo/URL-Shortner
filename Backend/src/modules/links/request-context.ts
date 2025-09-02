@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import { UAParser } from "ua-parser-js";
 import { createHash } from "node:crypto";
+import { env } from "@/config/env.js";
 
 function firstForwardedValue(value: string | undefined) {
   return value?.split(",")[0]?.trim();
@@ -16,7 +17,7 @@ export function hashIp(ip: string | undefined) {
     return undefined;
   }
 
-  return createHash("sha256").update(ip).digest("hex");
+  return createHash("sha256").update(`${env.IP_HASH_SALT}:${ip}`).digest("hex");
 }
 
 export function buildClickContext(req: Request) {
