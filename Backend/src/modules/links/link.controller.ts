@@ -7,6 +7,7 @@ import type { AnalyticsQuery, CreateLinkInput } from "@/modules/links/link.schem
 import {
   createLink,
   getAnalytics,
+  getPublicLink,
   getRedirectLink,
   recordClick
 } from "@/modules/links/link.service.js";
@@ -43,6 +44,12 @@ export const analyticsController = asyncHandler(async (req: AnalyticsRequest, re
   const analytics = await getAnalytics(req.params.code, getAdminKey(req), query);
 
   sendSuccess(res, analytics);
+});
+
+export const getLinkController = asyncHandler(async (req: RedirectRequest, res: Response) => {
+  const link = await getPublicLink(req.params.code);
+
+  sendSuccess(res, publicLink(link));
 });
 
 export const redirectController = asyncHandler(async (req: RedirectRequest, res: Response) => {
