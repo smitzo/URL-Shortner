@@ -4,6 +4,7 @@ import { AppError } from "@/lib/app-error.js";
 import { assertPublicHttpUrl } from "@/utils/url.js";
 import type { CreateLinkInput, AnalyticsQuery } from "@/modules/links/link.schemas.js";
 import { createShortCode } from "@/modules/links/code.js";
+import { isReservedCode } from "@/modules/links/reserved-codes.js";
 import { createAdminKey, hashAdminKey, verifyAdminKey } from "@/modules/links/security.js";
 import { shortUrlFor } from "@/modules/links/link.presenter.js";
 
@@ -27,6 +28,10 @@ export async function createLink(input: CreateLinkInput) {
   }
 
   if (input.customCode) {
+    if (isReservedCode(input.customCode)) {
+      throw new AppError(400, "RESERVED_CODE", "This custom short code is reserved.");
+    }
+
     const link = await prisma.link.create({
       data: {
         code: input.customCode,
@@ -43,10 +48,16 @@ export async function createLink(input: CreateLinkInput) {
   }
 
   for (let attempt = 0; attempt < MAX_CODE_ATTEMPTS; attempt += 1) {
+    const code = createShortCode();
+
+    if (isReservedCode(code)) {
+      continue;
+    }
+
     try {
       const link = await prisma.link.create({
         data: {
-          code: createShortCode(),
+          code,
           targetUrl,
           title: input.title,
           description: input.description,

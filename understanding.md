@@ -245,3 +245,38 @@ The test approach is intentionally layered:
 - app wiring tests for Express hardening.
 
 Database integration tests can be added once the Docker PostgreSQL flow is active in the development loop.
+
+## 17. Reserved Short Codes
+
+The backend blocks reserved short codes such as `api`, `health`, and `ready`.
+
+What this feature is:
+
+- a small domain rule in `reserved-codes.ts`;
+- a check inside link creation before custom codes are inserted;
+- a defensive check for generated codes, even though random generation is unlikely to produce route words.
+
+Why it exists:
+
+The backend has system routes:
+
+- `/api/...` for JSON API endpoints;
+- `/health` for process health;
+- `/ready` for database readiness.
+
+If a user could create a short link with code `api`, then `GET /api` would become ambiguous. It might be treated as an application route today, but future routing changes could accidentally make the short link shadow an API namespace or vice versa.
+
+How it works:
+
+1. `isReservedCode` lowercases the candidate code.
+2. The code is checked against a `Set` for constant-time lookup.
+3. Custom reserved codes fail with `RESERVED_CODE`.
+4. Generated reserved codes are skipped and generation retries.
+
+Why this is the best choice:
+
+A database-only unique constraint cannot solve this because reserved words are not rows in the link table. Keeping the rule in the domain service makes the restriction explicit and easy to update as new backend or frontend routes appear.
+
+Tradeoff:
+
+Some valid-looking words become unavailable to users. This is acceptable because route stability is more important than allowing every possible custom slug.
