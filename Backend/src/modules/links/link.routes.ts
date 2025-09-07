@@ -3,7 +3,8 @@ import {
   analyticsController,
   createLinkController,
   getLinkController,
-  redirectController
+  redirectController,
+  updateLinkStatusController
 } from "@/modules/links/link.controller.js";
 import { createLinkRateLimit } from "@/middleware/rate-limit.js";
 import { validateRequest } from "@/middleware/validate.js";
@@ -11,7 +12,8 @@ import {
   analyticsParamSchema,
   analyticsQuerySchema,
   codeParamSchema,
-  createLinkSchema
+  createLinkSchema,
+  updateLinkStatusSchema
 } from "@/modules/links/link.schemas.js";
 
 export const linkRouter = Router();
@@ -32,5 +34,11 @@ linkRouter.get(
   "/api/links/:code",
   validateRequest("params", codeParamSchema),
   getLinkController
+);
+linkRouter.patch(
+  "/api/links/:code/status",
+  validateRequest("params", codeParamSchema),
+  validateRequest("body", updateLinkStatusSchema),
+  updateLinkStatusController
 );
 linkRouter.get("/:code", validateRequest("params", codeParamSchema), redirectController);

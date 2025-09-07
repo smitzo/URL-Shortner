@@ -280,3 +280,35 @@ A database-only unique constraint cannot solve this because reserved words are n
 Tradeoff:
 
 Some valid-looking words become unavailable to users. This is acceptable because route stability is more important than allowing every possible custom slug.
+
+## 18. Admin-Protected Link Status Updates
+
+The backend supports `PATCH /api/links/:code/status` for changing a link between `ACTIVE` and `DISABLED`.
+
+What this feature is:
+
+- a management endpoint for the owner of an anonymous short link;
+- protected by the same admin key model used for analytics;
+- intentionally limited to status changes instead of arbitrary link edits.
+
+Why it exists:
+
+Production shorteners need a way to stop a link without deleting history. A campaign might end, a destination might become unsafe, or the creator may simply want to pause traffic. Deleting the link would destroy analytics context and can make debugging harder. Disabling keeps the row and click history but prevents future redirects.
+
+How it works:
+
+1. The route validates `code` and request body.
+2. The body accepts only `ACTIVE` or `DISABLED`.
+3. The admin key may be supplied in `X-Admin-Key` or the body.
+4. The service loads the link by code.
+5. The stored admin-key hash is compared with the provided key.
+6. Prisma updates only the `status` field.
+7. The response returns the public link representation.
+
+Why this is the best current design:
+
+The project does not yet have user accounts. Admin keys provide lightweight ownership for anonymous users. Restricting the endpoint to status updates keeps the blast radius small: users cannot mutate target URLs and silently redirect existing shared links to a different destination. That kind of target editing can be added later with audit history, but status toggling is safer as an early management feature.
+
+Tradeoff:
+
+If a user loses the admin key, they cannot manage the link. That is acceptable for this version because no user identity system exists yet.
