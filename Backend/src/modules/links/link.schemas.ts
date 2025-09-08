@@ -49,6 +49,15 @@ export const updateLinkStatusSchema = z.object({
   status: z.enum(["ACTIVE", "DISABLED"])
 });
 
+export const updateLinkMetadataSchema = z.object({
+  adminKey: z.string().min(24).optional(),
+  title: z.string().trim().min(1).max(120).nullable().optional(),
+  description: z.string().trim().max(280).nullable().optional(),
+  tags: z.array(z.string().trim().min(1).max(32)).max(10).optional(),
+  expiresAt: z.string().datetime().nullable().optional()
+});
+
 export type CreateLinkInput = z.infer<typeof createLinkSchema>;
 export type AnalyticsQuery = z.infer<typeof analyticsQuerySchema>;
 export type UpdateLinkStatusInput = z.infer<typeof updateLinkStatusSchema>;
+export type UpdateLinkMetadataInput = z.infer<typeof updateLinkMetadataSchema>;

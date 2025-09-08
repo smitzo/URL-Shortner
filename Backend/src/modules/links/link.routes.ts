@@ -4,6 +4,7 @@ import {
   createLinkController,
   getLinkController,
   redirectController,
+  updateLinkMetadataController,
   updateLinkStatusController
 } from "@/modules/links/link.controller.js";
 import { createLinkRateLimit } from "@/middleware/rate-limit.js";
@@ -13,6 +14,7 @@ import {
   analyticsQuerySchema,
   codeParamSchema,
   createLinkSchema,
+  updateLinkMetadataSchema,
   updateLinkStatusSchema
 } from "@/modules/links/link.schemas.js";
 
@@ -34,6 +36,12 @@ linkRouter.get(
   "/api/links/:code",
   validateRequest("params", codeParamSchema),
   getLinkController
+);
+linkRouter.patch(
+  "/api/links/:code",
+  validateRequest("params", codeParamSchema),
+  validateRequest("body", updateLinkMetadataSchema),
+  updateLinkMetadataController
 );
 linkRouter.patch(
   "/api/links/:code/status",

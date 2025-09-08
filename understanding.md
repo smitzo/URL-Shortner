@@ -312,3 +312,42 @@ The project does not yet have user accounts. Admin keys provide lightweight owne
 Tradeoff:
 
 If a user loses the admin key, they cannot manage the link. That is acceptable for this version because no user identity system exists yet.
+
+## 19. Admin-Protected Metadata Updates
+
+The backend supports `PATCH /api/links/:code` for editing safe metadata fields:
+
+- `title`;
+- `description`;
+- `tags`;
+- `expiresAt`.
+
+What this feature is:
+
+It is an owner-management endpoint for improving how a link is described and governed after creation. It does not allow changing the destination URL.
+
+Why this exists:
+
+Real users often create links quickly and then need to clean up labels later. Analytics dashboards also become much easier to scan when links have meaningful titles and tags. Expiration is operationally useful because a campaign or temporary document may need to stop working after a specific date.
+
+Why target URL editing is intentionally excluded:
+
+A URL shortener has a trust problem: once a short link is shared, people assume it keeps pointing to the same destination. If the creator could silently change the target URL later, a benign shared link could become malicious. That feature can exist in mature systems, but it should come with audit logs, user accounts, notifications, or policy controls. This project chooses the safer industry default for now: metadata can change, destination cannot.
+
+How it works:
+
+1. The route validates the short code and request body with Zod.
+2. The admin key is accepted through `X-Admin-Key` or the body.
+3. The service loads the link by code.
+4. The admin-key hash is verified.
+5. `expiresAt` is converted to a `Date` or cleared with `null`.
+6. Past expiration dates are rejected.
+7. Prisma updates only fields explicitly present in the request.
+
+Why this is a good design:
+
+Partial updates are useful for frontend forms because the client does not need to send every field. Keeping update logic in the service layer prevents route handlers from becoming business-rule containers. Returning the same public link presenter keeps API responses consistent across create, read, and update flows.
+
+Tradeoff:
+
+The endpoint does not currently keep a metadata change history. For a larger multi-user product, audit tables would be a strong next step.
