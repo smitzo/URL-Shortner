@@ -311,3 +311,30 @@ export async function getAnalytics(code: string, adminKey: string | undefined, q
     }))
   };
 }
+
+export async function getAdminLinkSummary(code: string, adminKey: string | undefined) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  if (!adminKey || !verifyAdminKey(adminKey, link.adminKeyHash)) {
+    throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
+  }
+
+  const [totalClicks, lastClick] = await Promise.all([
+    prisma.clickEvent.count({ where: { linkId: link.id } }),
+    prisma.clickEvent.findFirst({
+      where: { linkId: link.id },
+      orderBy: { clickedAt: "desc" },
+      select: { clickedAt: true }
+    })
+  ]);
+
+  return {
+    link,
+    totalClicks,
+    lastClickedAt: lastClick?.clickedAt ?? null
+  };
+}

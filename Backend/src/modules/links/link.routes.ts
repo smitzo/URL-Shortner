@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  adminLinkSummaryController,
   analyticsController,
   createLinkController,
   getLinkController,
@@ -31,6 +32,11 @@ linkRouter.get(
   validateRequest("params", analyticsParamSchema),
   validateRequest("query", analyticsQuerySchema),
   analyticsController
+);
+linkRouter.get(
+  "/api/links/:code/admin",
+  validateRequest("params", codeParamSchema),
+  adminLinkSummaryController
 );
 linkRouter.get(
   "/api/links/:code",
