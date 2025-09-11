@@ -4,6 +4,7 @@ import { AppError } from "@/lib/app-error.js";
 import { assertPublicHttpUrl } from "@/utils/url.js";
 import type { CreateLinkInput, AnalyticsQuery } from "@/modules/links/link.schemas.js";
 import type {
+  AnalyticsExportQuery,
   UpdateLinkMetadataInput,
   UpdateLinkStatusInput
 } from "@/modules/links/link.schemas.js";
@@ -337,4 +338,48 @@ export async function getAdminLinkSummary(code: string, adminKey: string | undef
     totalClicks,
     lastClickedAt: lastClick?.clickedAt ?? null
   };
+}
+
+export async function getAnalyticsExportRows(
+  code: string,
+  adminKey: string | undefined,
+  query: AnalyticsExportQuery
+) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  if (!adminKey || !verifyAdminKey(adminKey, link.adminKeyHash)) {
+    throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
+  }
+
+  const { from, to } = parseDateRange(query);
+
+  return prisma.clickEvent.findMany({
+    where: {
+      linkId: link.id,
+      ...(from || to
+        ? {
+            clickedAt: {
+              ...(from ? { gte: from } : {}),
+              ...(to ? { lte: to } : {})
+            }
+          }
+        : {})
+    },
+    orderBy: { clickedAt: "desc" },
+    take: query.limit,
+    select: {
+      id: true,
+      clickedAt: true,
+      referer: true,
+      browser: true,
+      os: true,
+      device: true,
+      country: true,
+      city: true
+    }
+  });
 }

@@ -384,3 +384,39 @@ Separating summary from analytics lets the frontend choose the right data cost f
 Tradeoff:
 
 This adds one more API endpoint, but the separation of concerns is worth it because summary and analytics have different performance profiles.
+
+## 21. CSV Analytics Export
+
+The backend supports `GET /api/links/:code/analytics/export.csv`.
+
+What this feature is:
+
+It is an admin-key protected export endpoint that returns raw click events as CSV. It supports the same `from` and `to` date filtering idea as the analytics endpoint, but allows a larger bounded `limit` for export use cases.
+
+Why this exists:
+
+Production analytics are often used outside the product UI. Teams may want to:
+
+- open click data in a spreadsheet;
+- share a campaign report;
+- import rows into a BI tool;
+- debug a suspicious spike by inspecting recent events.
+
+Providing CSV avoids forcing users to connect directly to PostgreSQL, which would be unsafe and operationally clumsy.
+
+How it works:
+
+1. The route validates the short code and export query.
+2. The admin key is required.
+3. The service loads the link and verifies ownership.
+4. Prisma fetches recent click rows with a hard maximum of 5000 rows.
+5. The controller converts rows to CSV using a small escaping utility.
+6. The response sets `Content-Type: text/csv` and an attachment filename.
+
+Why the export has a hard limit:
+
+CSV endpoints can become expensive if they stream unlimited historical data. A hard limit keeps memory and database work bounded. A future large-scale version could add cursor pagination or background export jobs.
+
+Why a custom CSV utility is acceptable here:
+
+The CSV shape is simple: flat rows with known scalar fields. The helper quotes cells only when needed and escapes double quotes according to CSV rules. If exports become more complex, a dedicated CSV library would be reasonable.

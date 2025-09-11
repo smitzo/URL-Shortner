@@ -14,6 +14,7 @@ The backend is the most complete part right now. It supports short-link creation
 - Redirect short links through `GET /:code`.
 - Record click analytics asynchronously.
 - Fetch protected analytics through `GET /api/links/:code/analytics`.
+- Export protected click analytics as CSV through `GET /api/links/:code/analytics/export.csv`.
 - Fetch public link metadata through `GET /api/links/:code`.
 - Update safe link metadata through `PATCH /api/links/:code`.
 - Fetch owner-only operational summary through `GET /api/links/:code/admin`.
@@ -84,6 +85,7 @@ The backend service waits for PostgreSQL, deploys Prisma migrations, and then st
 - `PATCH /api/links/:code`: update title, description, tags, or expiration with an admin key.
 - `PATCH /api/links/:code/status`: disable or reactivate a short link with an admin key.
 - `GET /api/links/:code/analytics`: read admin-key protected analytics.
+- `GET /api/links/:code/analytics/export.csv`: download click events as CSV with an admin key.
 - `GET /api/links/:code/admin`: read admin-key protected summary.
 - `GET /:code`: redirect to the original target URL.
 
