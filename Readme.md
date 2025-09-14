@@ -92,3 +92,5 @@ The backend service waits for PostgreSQL, deploys Prisma migrations, and then st
 ## Documentation
 
 Read [understanding.md](./understanding.md) for detailed explanations of the architecture, backend choices, database design, security rules, and API behavior.
+
+The API contract is documented in [docs/openapi.yaml](./docs/openapi.yaml).

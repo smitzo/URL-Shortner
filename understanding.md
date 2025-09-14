@@ -420,3 +420,36 @@ CSV endpoints can become expensive if they stream unlimited historical data. A h
 Why a custom CSV utility is acceptable here:
 
 The CSV shape is simple: flat rows with known scalar fields. The helper quotes cells only when needed and escapes double quotes according to CSV rules. If exports become more complex, a dedicated CSV library would be reasonable.
+
+## 22. OpenAPI Contract
+
+The project includes `docs/openapi.yaml`.
+
+What this feature is:
+
+It is a machine-readable API contract that describes the backend routes, parameters, request bodies, and important response cases.
+
+Why it exists:
+
+Production APIs need a source of truth outside the code. Frontend developers should not have to inspect Express route files to know which fields are valid. QA should be able to see expected error cases. Future API clients can generate SDKs or typed clients from the OpenAPI document.
+
+How it works:
+
+The file follows OpenAPI 3.1 and documents:
+
+- health and readiness routes;
+- short-link creation;
+- public metadata reads;
+- admin metadata updates;
+- admin status updates;
+- analytics reads;
+- CSV export;
+- redirect behavior.
+
+Why this is a good choice:
+
+OpenAPI is an industry standard. It works with documentation renderers, client generators, API gateways, and contract-testing tools. Even though this project does not yet generate code from the spec, keeping the spec in the repo makes the backend easier to maintain and review.
+
+Tradeoff:
+
+The spec must be kept in sync with code. That is why backend feature commits should update `docs/openapi.yaml` when they change the public API.
