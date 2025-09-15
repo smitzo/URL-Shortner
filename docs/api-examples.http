@@ -1,0 +1,63 @@
+### Health
+GET http://localhost:5000/health
+
+### Readiness
+GET http://localhost:5000/ready
+
+### Create short link
+POST http://localhost:5000/api/links
+Content-Type: application/json
+
+{
+  "targetUrl": "https://nextjs.org/docs",
+  "customCode": "next-docs",
+  "title": "Next.js Docs",
+  "description": "Official documentation for Next.js",
+  "tags": ["docs", "nextjs"]
+}
+
+### Public metadata
+GET http://localhost:5000/api/links/next-docs
+
+### Owner summary
+GET http://localhost:5000/api/links/next-docs/admin
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+### Update metadata
+PATCH http://localhost:5000/api/links/next-docs
+Content-Type: application/json
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+{
+  "title": "Next.js Documentation",
+  "tags": ["docs", "react", "nextjs"]
+}
+
+### Disable link
+PATCH http://localhost:5000/api/links/next-docs/status
+Content-Type: application/json
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+{
+  "status": "DISABLED"
+}
+
+### Reactivate link
+PATCH http://localhost:5000/api/links/next-docs/status
+Content-Type: application/json
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+{
+  "status": "ACTIVE"
+}
+
+### Analytics
+GET http://localhost:5000/api/links/next-docs/analytics?limit=25
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+### Analytics CSV export
+GET http://localhost:5000/api/links/next-docs/analytics/export.csv?limit=1000
+X-Admin-Key: replace-with-admin-key-from-create-response
+
+### Redirect
+GET http://localhost:5000/next-docs
