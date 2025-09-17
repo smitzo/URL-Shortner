@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { pinoHttp } from "pino-http";
 import { env } from "@/config/env.js";
 import { corsOptions } from "@/config/http.js";
+import { helmetOptions } from "@/config/security.js";
 import { errorHandler } from "@/middleware/error-handler.js";
 import { notFound } from "@/middleware/not-found.js";
 import { apiRateLimit } from "@/middleware/rate-limit.js";
@@ -25,7 +26,7 @@ export function createApp() {
       autoLogging: env.NODE_ENV !== "test"
     })
   );
-  app.use(helmet());
+  app.use(helmet(helmetOptions));
   app.use(cors(corsOptions));
   app.use(compression());
   app.use(express.json({ limit: "64kb" }));

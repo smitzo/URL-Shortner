@@ -487,3 +487,34 @@ It reduces onboarding friction. New developers and reviewers can exercise the AP
 Tradeoff:
 
 The examples are not automated tests. They are living documentation and must be updated when routes change.
+
+## 24. Explicit Security Headers
+
+The backend configures Helmet through `src/config/security.ts`.
+
+What this feature is:
+
+It is a central security-header policy for the Express API.
+
+The policy currently:
+
+- disables Content Security Policy because this backend serves JSON and redirects, not browser-rendered HTML;
+- sets `Cross-Origin-Resource-Policy` to `same-site`;
+- sets `Referrer-Policy` to `no-referrer`;
+- enables HSTS only in production.
+
+Why it exists:
+
+Security headers are a basic production baseline. They reduce accidental browser data leakage and make deployment behavior more explicit. Keeping options in `config/security.ts` prevents `app.ts` from becoming a pile of middleware details.
+
+Why Content Security Policy is disabled here:
+
+CSP is most useful for HTML pages that execute scripts. This backend returns JSON and redirects. A strict CSP on an API usually adds noise without meaningful protection. The Next.js frontend can define its own CSP later because frontend HTML has different security needs.
+
+Why HSTS is production-only:
+
+HSTS tells browsers to force HTTPS for a host. That is good in production, but painful in local development where HTTP is common. Enabling it only in production gives the security benefit without breaking local workflows.
+
+Tradeoff:
+
+Security headers do not replace authentication, validation, rate limiting, or deployment-level protections. They are one layer in a layered security model.
