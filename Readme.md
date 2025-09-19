@@ -26,6 +26,7 @@ The backend is the most complete part right now. It supports short-link creation
 - Include request IDs in error responses for production debugging.
 - Apply API and create-link rate limits.
 - Send explicit production-minded security headers with Helmet.
+- Mark API JSON responses as `no-store` to avoid accidental caching.
 
 ## Backend Quickstart
 

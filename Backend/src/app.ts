@@ -6,6 +6,7 @@ import { pinoHttp } from "pino-http";
 import { env } from "@/config/env.js";
 import { corsOptions } from "@/config/http.js";
 import { helmetOptions } from "@/config/security.js";
+import { noStoreApiResponses } from "@/middleware/cache-control.js";
 import { errorHandler } from "@/middleware/error-handler.js";
 import { notFound } from "@/middleware/not-found.js";
 import { apiRateLimit } from "@/middleware/rate-limit.js";
@@ -32,7 +33,7 @@ export function createApp() {
   app.use(express.json({ limit: "64kb" }));
   app.use(express.urlencoded({ extended: false }));
 
-  app.use("/api", apiRateLimit);
+  app.use("/api", noStoreApiResponses, apiRateLimit);
   app.use(router);
 
   app.use(notFound);
