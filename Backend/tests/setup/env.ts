@@ -1,4 +1,6 @@
 process.env.NODE_ENV = "test";
+process.env.APP_VERSION = "test";
+process.env.GIT_SHA = "test-sha";
 process.env.PORT = "5000";
 process.env.API_BASE_URL = "http://localhost:5000";
 process.env.WEB_BASE_URL = "http://localhost:3000";

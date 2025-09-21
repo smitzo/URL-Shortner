@@ -19,6 +19,12 @@ paths:
       responses:
         "200":
           description: Backend can reach PostgreSQL.
+  /version:
+    get:
+      summary: Runtime version metadata
+      responses:
+        "200":
+          description: Backend version, git SHA, and environment.
   /api/links:
     post:
       summary: Create a short link

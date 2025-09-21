@@ -9,6 +9,8 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
+  APP_VERSION: z.string().min(1).default("1.0.0"),
+  GIT_SHA: z.string().min(1).default("local"),
   PORT: z.coerce.number().int().positive().default(5000),
   API_BASE_URL: z.string().url().default("http://localhost:5000"),
   WEB_BASE_URL: z.string().url().default("http://localhost:3000"),
