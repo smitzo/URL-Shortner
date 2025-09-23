@@ -77,6 +77,17 @@ paths:
           description: Owner summary.
         "401":
           description: Invalid admin key.
+  /api/links/{code}/audit:
+    get:
+      summary: Read owner-only audit trail
+      parameters:
+        - $ref: "#/components/parameters/Code"
+        - $ref: "#/components/parameters/AdminKeyQuery"
+      responses:
+        "200":
+          description: Recent owner action audit events.
+        "401":
+          description: Invalid admin key.
   /api/links/{code}/status:
     patch:
       summary: Disable or reactivate a short link

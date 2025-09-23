@@ -26,10 +26,23 @@ model Link {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   clicks       ClickEvent[]
+  audits       LinkAuditEvent[]
 
   @@index([createdAt])
   @@index([status])
   @@index([expiresAt])
+}
+
+model LinkAuditEvent {
+  id        String   @id @default(cuid())
+  linkId    String
+  action    String
+  changes   Json
+  createdAt DateTime @default(now())
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@index([linkId, createdAt])
+  @@index([action])
 }
 
 model ClickEvent {

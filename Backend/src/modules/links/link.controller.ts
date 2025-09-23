@@ -15,6 +15,7 @@ import {
   getAnalyticsExportRows,
   getAdminLinkSummary,
   getAnalytics,
+  getLinkAuditEvents,
   getPublicLink,
   getRedirectLink,
   recordClick,
@@ -100,6 +101,12 @@ export const adminLinkSummaryController = asyncHandler(
     });
   }
 );
+
+export const linkAuditController = asyncHandler(async (req: RedirectRequest, res: Response) => {
+  const auditEvents = await getLinkAuditEvents(req.params.code, getAdminKey(req));
+
+  sendSuccess(res, auditEvents);
+});
 
 export const updateLinkStatusController = asyncHandler(
   async (req: UpdateStatusRequest, res: Response) => {

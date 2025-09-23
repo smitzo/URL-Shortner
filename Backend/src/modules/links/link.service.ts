@@ -15,6 +15,20 @@ import { shortUrlFor } from "@/modules/links/link.presenter.js";
 
 const MAX_CODE_ATTEMPTS = 8;
 
+async function recordAuditEvent(
+  linkId: string,
+  action: string,
+  changes: Record<string, unknown>
+) {
+  await prisma.linkAuditEvent.create({
+    data: {
+      linkId,
+      action,
+      changes
+    }
+  });
+}
+
 function parseDateRange(query: AnalyticsQuery) {
   return {
     from: query.from ? new Date(query.from) : undefined,
@@ -49,6 +63,12 @@ export async function createLink(input: CreateLinkInput) {
       }
     });
 
+    await recordAuditEvent(link.id, "LINK_CREATED", {
+      customCode: true,
+      title: link.title,
+      expiresAt: link.expiresAt?.toISOString() ?? null
+    });
+
     return { link, adminKey, shortUrl: shortUrlFor(link.code) };
   }
 
@@ -70,6 +90,12 @@ export async function createLink(input: CreateLinkInput) {
           expiresAt,
           adminKeyHash
         }
+      });
+
+      await recordAuditEvent(link.id, "LINK_CREATED", {
+        customCode: false,
+        title: link.title,
+        expiresAt: link.expiresAt?.toISOString() ?? null
       });
 
       return { link, adminKey, shortUrl: shortUrlFor(link.code) };
@@ -137,10 +163,17 @@ export async function updateLinkStatus(
     throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
   }
 
-  return prisma.link.update({
+  const updated = await prisma.link.update({
     where: { id: link.id },
     data: { status: input.status }
   });
+
+  await recordAuditEvent(link.id, "STATUS_UPDATED", {
+    from: link.status,
+    to: updated.status
+  });
+
+  return updated;
 }
 
 export async function updateLinkMetadata(
@@ -166,7 +199,7 @@ export async function updateLinkMetadata(
     throw new AppError(400, "INVALID_EXPIRY", "Expiration must be in the future.");
   }
 
-  return prisma.link.update({
+  const updated = await prisma.link.update({
     where: { id: link.id },
     data: {
       ...(input.title !== undefined ? { title: input.title } : {}),
@@ -175,6 +208,15 @@ export async function updateLinkMetadata(
       ...(expiresAt !== undefined ? { expiresAt } : {})
     }
   });
+
+  await recordAuditEvent(link.id, "METADATA_UPDATED", {
+    title: input.title,
+    description: input.description,
+    tags: input.tags,
+    expiresAt: expiresAt?.toISOString() ?? null
+  });
+
+  return updated;
 }
 
 export async function recordClick(
@@ -380,6 +422,30 @@ export async function getAnalyticsExportRows(
       device: true,
       country: true,
       city: true
+    }
+  });
+}
+
+export async function getLinkAuditEvents(code: string, adminKey: string | undefined) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  if (!adminKey || !verifyAdminKey(adminKey, link.adminKeyHash)) {
+    throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
+  }
+
+  return prisma.linkAuditEvent.findMany({
+    where: { linkId: link.id },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+    select: {
+      id: true,
+      action: true,
+      changes: true,
+      createdAt: true
     }
   });
 }
