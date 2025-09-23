@@ -24,10 +24,14 @@ router.get("/version", (_req, res) => {
 
 router.get("/ready", async (_req, res, next) => {
   try {
+    const startedAt = performance.now();
     await prisma.$queryRaw`SELECT 1`;
+    const databaseLatencyMs = Math.round(performance.now() - startedAt);
+
     sendSuccess(res, {
       status: "ready",
-      database: "connected"
+      database: "connected",
+      databaseLatencyMs
     });
   } catch (error) {
     next(error);
