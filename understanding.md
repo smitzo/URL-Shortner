@@ -643,3 +643,32 @@ It adds useful observability without introducing a metrics stack yet. It is also
 Tradeoff:
 
 The measurement is request-local and not a historical metric. A production deployment should still export metrics to a monitoring system later.
+
+## 29. Bounded Graceful Shutdown
+
+The backend has graceful shutdown logic in `src/server.ts`.
+
+What this feature is:
+
+When the process receives `SIGTERM` or `SIGINT`, the server stops accepting new connections, disconnects Prisma, and exits. A timeout forces exit if shutdown hangs.
+
+Why it exists:
+
+Containers and process managers send shutdown signals during deploys, restarts, and scaling events. A backend should stop cleanly so in-flight requests get a chance to finish and database connections are released. But it should not hang forever, because that can block deployments and leave unhealthy containers around.
+
+How it works:
+
+1. `SIGTERM` or `SIGINT` calls `shutdown`.
+2. A timer is started using `SHUTDOWN_TIMEOUT_MS`.
+3. `server.close` stops accepting new connections and waits for open ones to close.
+4. Prisma disconnects.
+5. The timeout is cleared and the process exits successfully.
+6. If the timeout fires first, the process exits with failure.
+
+Why this is a good choice:
+
+It matches common container orchestration behavior. Kubernetes, Docker, and process managers all expect services to respond correctly to termination signals.
+
+Tradeoff:
+
+If a request legitimately needs longer than the timeout, it may be cut off. The timeout should be tuned based on real endpoint latency and deployment requirements.
