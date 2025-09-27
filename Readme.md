@@ -105,3 +105,5 @@ The API contract is documented in [docs/openapi.yaml](./docs/openapi.yaml).
 Manual request examples are available in [docs/api-examples.http](./docs/api-examples.http).
 
 Backend operations guidance is available in [docs/backend-runbook.md](./docs/backend-runbook.md).
+
+Backend stack rationale is recorded in [docs/decisions/001-backend-stack.md](./docs/decisions/001-backend-stack.md).
