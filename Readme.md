@@ -103,3 +103,5 @@ Read [understanding.md](./understanding.md) for detailed explanations of the arc
 The API contract is documented in [docs/openapi.yaml](./docs/openapi.yaml).
 
 Manual request examples are available in [docs/api-examples.http](./docs/api-examples.http).
+
+Backend operations guidance is available in [docs/backend-runbook.md](./docs/backend-runbook.md).
