@@ -7,6 +7,9 @@ GET http://localhost:5000/ready
 ### Version
 GET http://localhost:5000/version
 
+### Robots policy
+GET http://localhost:5000/robots.txt
+
 ### Create short link
 POST http://localhost:5000/api/links
 Content-Type: application/json

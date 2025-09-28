@@ -22,6 +22,10 @@ router.get("/version", (_req, res) => {
   });
 });
 
+router.get("/robots.txt", (_req, res) => {
+  res.type("text/plain").send(["User-agent: *", "Disallow: /"].join("\n"));
+});
+
 router.get("/ready", async (_req, res, next) => {
   try {
     const startedAt = performance.now();

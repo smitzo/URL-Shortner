@@ -30,6 +30,7 @@ The backend is the most complete part right now. It supports short-link creation
 - Send explicit production-minded security headers with Helmet.
 - Mark API JSON responses as `no-store` to avoid accidental caching.
 - Use bounded graceful shutdown for container-friendly deploys.
+- Serve `robots.txt` to discourage indexing short-link paths.
 
 ## Backend Quickstart
 
@@ -86,6 +87,7 @@ The backend service waits for PostgreSQL, deploys Prisma migrations, and then st
 - `GET /health`: process health check.
 - `GET /ready`: database readiness check with query latency.
 - `GET /version`: service version and deployment metadata.
+- `GET /robots.txt`: crawler policy.
 - `POST /api/links`: create a short link.
 - `GET /api/links/:code`: read public metadata for a short link.
 - `PATCH /api/links/:code`: update title, description, tags, or expiration with an admin key.
