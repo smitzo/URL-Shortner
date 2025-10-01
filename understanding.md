@@ -812,3 +812,33 @@ It gives most of the benefit of generated clients while keeping the current proj
 Tradeoff:
 
 Manual types must be kept in sync with backend changes. For this project phase, that is acceptable because the API surface is still compact.
+
+## 35. Frontend API Client
+
+The frontend uses `src/lib/api-client.ts` for backend requests.
+
+What this is:
+
+It is a typed wrapper around `fetch`.
+
+Why it exists:
+
+Frontend components should not each implement their own error parsing, timeout behavior, JSON serialization, or API base URL handling. Repeating that logic causes inconsistent UX and subtle bugs.
+
+How it works:
+
+1. The caller passes an API path and optional request options.
+2. The client joins the path with `config.apiBaseUrl`.
+3. Request bodies are JSON serialized.
+4. An `AbortController` enforces a timeout.
+5. Successful responses unwrap the backend `{ data }` envelope.
+6. Backend error envelopes become `ApiClientError`.
+7. Network failures and timeouts are normalized into user-readable errors.
+
+Why this is a good choice:
+
+It keeps the UI components focused on product behavior. It also creates one place to add future cross-cutting behavior such as auth headers, retry policy, tracing headers, or client-side metrics.
+
+Tradeoff:
+
+The wrapper currently assumes JSON success responses. CSV export uses a direct URL instead of this helper because it intentionally returns `text/csv`.
