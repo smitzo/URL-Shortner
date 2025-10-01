@@ -780,3 +780,35 @@ A single config module keeps deployment assumptions explicit. It also makes futu
 Tradeoff:
 
 Only variables prefixed with `NEXT_PUBLIC_` are available in the browser. Secrets must never be placed here.
+
+## 34. Frontend API Types
+
+The frontend defines API contracts in `src/types/api.ts`.
+
+What this is:
+
+It is a TypeScript model of the backend response shapes used by the UI.
+
+Why it exists:
+
+The backend already returns consistent envelopes and typed concepts such as links, analytics, summaries, and audit events. The frontend should not treat those as untyped blobs. Strong frontend types make component props clearer and reduce accidental field mismatches.
+
+How it works:
+
+The file defines:
+
+- response envelopes;
+- public link shape;
+- create-link payloads;
+- analytics responses;
+- admin summaries;
+- audit events;
+- backend error envelopes.
+
+Why this is a good choice:
+
+It gives most of the benefit of generated clients while keeping the current project simple. Later, the OpenAPI file could generate these types automatically.
+
+Tradeoff:
+
+Manual types must be kept in sync with backend changes. For this project phase, that is acceptable because the API surface is still compact.
