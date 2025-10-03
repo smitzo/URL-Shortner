@@ -842,3 +842,30 @@ It keeps the UI components focused on product behavior. It also creates one plac
 Tradeoff:
 
 The wrapper currently assumes JSON success responses. CSV export uses a direct URL instead of this helper because it intentionally returns `text/csv`.
+
+## 36. Frontend Request Cache and De-Duplication
+
+The frontend includes `src/lib/request-cache.ts`.
+
+What this is:
+
+It is a tiny in-memory cache with request de-duplication.
+
+Why it exists:
+
+Analytics pages can trigger repeated fetches: initial render, tab changes, refresh clicks, and React re-renders. Without de-duplication, the same expensive analytics endpoint could be called multiple times at once. That wastes backend resources and creates flickery UI.
+
+How it works:
+
+- `memoryCache` stores resolved values until their TTL expires.
+- `inFlight` stores promises for requests currently running.
+- If the same key is requested while a request is in flight, the existing promise is reused.
+- Cache keys can be cleared directly or by prefix after mutations.
+
+Why this is a good choice:
+
+It gives SWR-style behavior without adding another dependency yet. The project can later adopt TanStack Query or SWR if caching needs become more complex, but this lightweight helper covers the immediate optimization need.
+
+Tradeoff:
+
+The cache is per browser tab and disappears on refresh. That is fine for analytics UI performance; it is not meant to be durable storage.
