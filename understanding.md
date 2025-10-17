@@ -1034,3 +1034,27 @@ Operational tools should feel organized and easy to scan. These primitives give 
 Tradeoff:
 
 Panels are useful for individual tool surfaces, but page sections should not become nested card stacks. The app keeps panels flat and purposeful.
+
+## 43. Frontend App Shell
+
+The frontend includes `src/components/app-shell.tsx`.
+
+What this is:
+
+It is the shared page frame: header, navigation, brand mark, and main content width.
+
+Why it exists:
+
+The app is an operational tool, not a marketing page. Users need to create links, inspect analytics, and manage state quickly. A stable app shell keeps navigation predictable and leaves the first screen for the actual workflow.
+
+How it works:
+
+The shell uses Next.js `Link` for navigation and Heroicons for clear visual cues. It constrains content to `max-w-7xl` and uses Tailwind spacing, borders, and typography.
+
+Why this is a good choice:
+
+It matches the product's job: quiet, utilitarian, and scannable. It avoids oversized hero marketing patterns and gives the dashboard room to grow.
+
+Tradeoff:
+
+The navigation is intentionally minimal for now. More sections can be added when the frontend has account management or broader reporting.
