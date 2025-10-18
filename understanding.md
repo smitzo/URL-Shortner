@@ -1058,3 +1058,32 @@ It matches the product's job: quiet, utilitarian, and scannable. It avoids overs
 Tradeoff:
 
 The navigation is intentionally minimal for now. More sections can be added when the frontend has account management or broader reporting.
+
+## 44. Create Link Form
+
+The frontend includes `src/features/links/create-link-form.tsx`.
+
+What this is:
+
+It is the main client-side form for creating short links.
+
+Why it exists:
+
+Creating a short link is the core product workflow. The form captures destination URL, optional custom code, title, description, tags, and expiration.
+
+How it works:
+
+1. The component stores form state locally.
+2. It performs lightweight client-side URL validation for immediate feedback.
+3. Tags are split by comma.
+4. `datetime-local` input values are converted to ISO strings.
+5. The typed endpoint layer sends the create request.
+6. The parent receives the created link, including admin key.
+
+Why this is a good choice:
+
+The backend remains the source of truth for security validation, but client-side validation improves UX by catching obvious mistakes earlier. The form uses reusable UI primitives, so styling stays consistent and Tailwind-only.
+
+Tradeoff:
+
+The form does not use a dedicated form library. For this amount of state, React state is clearer and avoids extra dependency weight.
