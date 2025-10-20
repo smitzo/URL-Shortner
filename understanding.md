@@ -1087,3 +1087,35 @@ The backend remains the source of truth for security validation, but client-side
 Tradeoff:
 
 The form does not use a dedicated form library. For this amount of state, React state is clearer and avoids extra dependency weight.
+
+## 45. Created Link Result Card
+
+The frontend includes `src/features/links/created-link-card.tsx`.
+
+What this is:
+
+It is the post-create success panel that shows the short URL, destination summary, link status, admin key, and next actions.
+
+Why it exists:
+
+The backend returns the admin key only at creation time. The UI must make that moment obvious so users know to store the key. A generic toast would be too easy to miss.
+
+How it works:
+
+The card exposes:
+
+- short URL link;
+- status badge;
+- destination hostname/path;
+- admin key in a high-visibility warning panel;
+- copy short URL action;
+- copy admin key action;
+- direct analytics link with the admin key in the query string.
+
+Why this is a good choice:
+
+It moves the user naturally from creation to management. Copy actions reduce friction and prevent manual selection mistakes.
+
+Tradeoff:
+
+Putting the admin key into the analytics URL is convenient but should be treated carefully. The backend also accepts the key through a header, and a future authenticated product would avoid query-string secrets.
