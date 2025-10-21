@@ -1119,3 +1119,31 @@ It moves the user naturally from creation to management. Copy actions reduce fri
 Tradeoff:
 
 Putting the admin key into the analytics URL is convenient but should be treated carefully. The backend also accepts the key through a header, and a future authenticated product would avoid query-string secrets.
+
+## 46. Recent Links Client Queue
+
+The frontend includes `src/hooks/use-recent-links.ts`.
+
+What this is:
+
+It is a small browser-side recent-links queue backed by `localStorage`.
+
+Why it exists:
+
+The current product does not have user accounts. Without a lightweight local queue, users would lose quick access to links they just created after the success card disappears. The queue keeps recent work visible without requiring backend user identity.
+
+How it works:
+
+- links are read from `localStorage` after the component mounts;
+- new links are moved to the front;
+- duplicate codes are de-duplicated;
+- the list is capped at eight links;
+- users can clear the local list.
+
+Why this is a good choice:
+
+It improves UX while keeping the architecture simple. It also avoids storing recent links on the backend without a real user model.
+
+Tradeoff:
+
+The queue is device-local. Clearing browser storage or switching devices loses it. That is acceptable until authentication exists.
