@@ -1147,3 +1147,33 @@ It improves UX while keeping the architecture simple. It also avoids storing rec
 Tradeoff:
 
 The queue is device-local. Clearing browser storage or switching devices loses it. That is acceptable until authentication exists.
+
+## 47. Recent Links Panel
+
+The frontend includes `src/features/links/recent-links-panel.tsx`.
+
+What this is:
+
+It is the visual dashboard panel for the browser-local recent link queue.
+
+Why it exists:
+
+Users need a way to return to analytics for links they just created. Because there are no accounts yet, this panel provides a pragmatic local history.
+
+How it works:
+
+Each recent link shows:
+
+- short URL;
+- status;
+- destination summary;
+- creation time;
+- analytics route link with admin key.
+
+Why this is a good choice:
+
+It keeps the home screen workflow-oriented: create link on the left, recent operational context on the right. It is useful without requiring backend changes.
+
+Tradeoff:
+
+The panel can only show links created in the same browser. This is a conscious temporary tradeoff before authentication.
