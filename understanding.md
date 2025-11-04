@@ -1177,3 +1177,27 @@ It keeps the home screen workflow-oriented: create link on the left, recent oper
 Tradeoff:
 
 The panel can only show links created in the same browser. This is a conscious temporary tradeoff before authentication.
+
+## 48. Link Dashboard Composition
+
+The frontend includes `src/features/links/link-dashboard.tsx`.
+
+What this is:
+
+It is the home page product experience. It composes the app shell, create form, created-link result, and recent-links panel.
+
+Why it exists:
+
+The first screen should be the usable tool, not a marketing landing page. Users arrive to shorten a URL, so the create workflow is immediately available.
+
+How it works:
+
+The dashboard owns the latest created link state and passes an `onCreated` callback to the form. When a link is created, it shows the result card and inserts the link into the local recent queue.
+
+Why this is a good choice:
+
+State is kept at the smallest shared level: the dashboard coordinates sibling components, while individual components stay focused. This keeps the flow easy to understand and avoids global state prematurely.
+
+Tradeoff:
+
+The page is a client component because the create workflow and local queue are interactive. Server components can still be used later for static or authenticated data-loading sections.
