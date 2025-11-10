@@ -1280,3 +1280,27 @@ The route itself stays small and server-friendly, while the dashboard owns inter
 Tradeoff:
 
 The first version gates by key length client-side, while the backend remains the real authority. Invalid keys still fail at the API layer.
+
+## 52. Analytics Link Overview
+
+The frontend includes `src/features/analytics/link-overview.tsx`.
+
+What this is:
+
+It is the first protected analytics panel. It loads the owner summary endpoint and shows short URL, status, destination, last click time, and total clicks.
+
+Why it exists:
+
+Users need a quick operational answer before reading deeper analytics: is the link active, where does it point, and how much traffic has it received?
+
+How it works:
+
+The component uses `useAsyncResource` and `getAdminSummary`. It supports loading, error, disabled, and refresh states. Cached requests prevent duplicate summary loads.
+
+Why this is a good choice:
+
+It separates a lightweight summary from full analytics. That mirrors the backend design and keeps the dashboard responsive.
+
+Tradeoff:
+
+The panel depends on the admin key. Public metadata could be loaded without a key, but the summary intentionally stays owner-only because it includes click counts.
