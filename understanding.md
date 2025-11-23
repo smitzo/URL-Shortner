@@ -1376,3 +1376,27 @@ Tables are the right UI for event logs. They are scannable, accessible, and fami
 Tradeoff:
 
 The backend currently returns a bounded recent list, not full pagination. That keeps the UI fast and simple; pagination can be added later.
+
+## 56. CSV Export Action
+
+The frontend includes `src/features/analytics/export-actions.tsx`.
+
+What this is:
+
+It is the UI action that downloads click analytics as CSV.
+
+Why it exists:
+
+Analytics often need to leave the dashboard. Users may share reports, inspect rows in spreadsheets, or import click events into another tool.
+
+How it works:
+
+The component builds a CSV export URL through the endpoint layer and renders a disabled button until an admin key is available. The download itself is handled by the browser because the backend returns `text/csv` with attachment headers.
+
+Why this is a good choice:
+
+CSV is a file download, so using a normal anchor is simpler and more reliable than fetching bytes manually in JavaScript.
+
+Tradeoff:
+
+The admin key is included in the generated URL for browser download convenience. A future authenticated app could use secure cookies or a signed short-lived export token.
