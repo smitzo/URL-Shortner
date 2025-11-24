@@ -1400,3 +1400,27 @@ CSV is a file download, so using a normal anchor is simpler and more reliable th
 Tradeoff:
 
 The admin key is included in the generated URL for browser download convenience. A future authenticated app could use secure cookies or a signed short-lived export token.
+
+## 57. Metadata Editor
+
+The frontend includes `src/features/analytics/metadata-editor.tsx`.
+
+What this is:
+
+It is an owner-only form for editing title, description, tags, and expiration.
+
+Why it exists:
+
+Links often need better labels after creation. Metadata makes analytics easier to understand without changing the destination URL.
+
+How it works:
+
+The component receives the current link, mirrors editable fields into local state, submits through `updateLinkMetadata`, and reports the updated link back to the dashboard.
+
+Why this is a good choice:
+
+It reflects the backend safety model: users can update descriptive metadata, but not the target URL. The endpoint layer handles cache invalidation after saving.
+
+Tradeoff:
+
+The component uses a simple status message instead of a global toast system. That keeps the UI dependency-light for now.
