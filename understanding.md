@@ -1448,3 +1448,27 @@ The UI mirrors backend constraints. Expired links cannot be reactivated from thi
 Tradeoff:
 
 There is no confirmation modal yet. The action is reversible for active/disabled states, so inline controls are acceptable for this phase.
+
+## 59. Audit Timeline
+
+The frontend includes `src/features/analytics/audit-timeline.tsx`.
+
+What this is:
+
+It is the owner-facing view of backend audit events.
+
+Why it exists:
+
+Users should be able to see important lifecycle changes: creation, metadata updates, and status changes. This improves trust and helps debug "who changed what" style questions even before full user accounts exist.
+
+How it works:
+
+The component loads audit events with the admin key, renders loading and error states, and displays events newest-first as a timeline.
+
+Why this is a good choice:
+
+A timeline is easier to scan than raw JSON for operational history. The backend keeps the detailed `changes` payload available, while the UI starts with readable action labels.
+
+Tradeoff:
+
+The first UI does not expand full change payloads. That can be added once users need deeper audit inspection.
