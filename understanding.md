@@ -1472,3 +1472,44 @@ A timeline is easier to scan than raw JSON for operational history. The backend 
 Tradeoff:
 
 The first UI does not expand full change payloads. That can be added once users need deeper audit inspection.
+
+## 60. Analytics Dashboard Composition
+
+The analytics dashboard now wires together all management and reporting panels.
+
+What this is:
+
+`analytics-dashboard.tsx` composes:
+
+- admin key panel;
+- link overview;
+- analytics summary;
+- breakdown grid;
+- recent clicks table;
+- CSV export action;
+- metadata editor;
+- status controls;
+- audit timeline.
+
+Why it exists:
+
+Analytics is a workflow, not one chart. A user needs to inspect traffic, export data, update metadata, pause traffic, and review audit history from one place.
+
+How it works:
+
+The dashboard owns shared state for the current short code, admin key, edited link override, analytics data, and summary data. Child components stay focused on one responsibility.
+
+Caching and optimization:
+
+- summary and analytics calls use the request cache;
+- child panels receive already-loaded data where possible;
+- mutation results update local dashboard state immediately;
+- cache invalidation happens in the endpoint layer after mutations.
+
+Why this is a good choice:
+
+It keeps the top-level page readable while preserving local ownership of state. This is a practical middle ground before introducing a global client cache library.
+
+Tradeoff:
+
+Some data is fetched by multiple panels in this phase, but request de-duplication prevents duplicate concurrent network work. A later refactor could pass more loaded data down from the dashboard.
