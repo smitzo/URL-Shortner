@@ -1513,3 +1513,27 @@ It keeps the top-level page readable while preserving local ownership of state. 
 Tradeoff:
 
 Some data is fetched by multiple panels in this phase, but request de-duplication prevents duplicate concurrent network work. A later refactor could pass more loaded data down from the dashboard.
+
+## 61. Analytics Route Loading States
+
+The analytics route includes `loading.tsx` and `not-found.tsx`.
+
+What this is:
+
+These files define route-level fallback UI for slow navigation and unavailable analytics routes.
+
+Why it exists:
+
+Production apps should not show blank screens during navigation. Loading skeletons communicate that work is happening and keep layout stable.
+
+How it works:
+
+Next.js App Router automatically uses `loading.tsx` while the route segment is loading. `not-found.tsx` provides a controlled fallback if the route decides a resource is unavailable later.
+
+Why this is a good choice:
+
+The loading UI matches the dashboard layout, so the page does not jump dramatically when content appears. The not-found state gives users a clear path back to the main workflow.
+
+Tradeoff:
+
+The current not-found file is generic. Once server-side link lookup is added, it can include more specific messaging.
