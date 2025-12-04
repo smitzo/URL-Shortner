@@ -1537,3 +1537,27 @@ The loading UI matches the dashboard layout, so the page does not jump dramatica
 Tradeoff:
 
 The current not-found file is generic. Once server-side link lookup is added, it can include more specific messaging.
+
+## 62. Frontend README
+
+The project includes `Frontend/README.md`.
+
+What this is:
+
+It is a focused guide for the Next.js frontend.
+
+Why it exists:
+
+The root README explains the whole project. The frontend README explains the frontend's own structure, runtime configuration, caching strategy, admin key handling, and styling rules.
+
+How it works:
+
+The document maps folders to responsibilities and highlights the important architectural choices used by the UI.
+
+Why this is a good choice:
+
+Frontend codebases become hard to onboard when state, API, and styling rules are implicit. A dedicated README makes expectations explicit.
+
+Tradeoff:
+
+It adds another documentation file to maintain, but the clarity is worth it for a fullstack project.
