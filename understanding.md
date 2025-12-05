@@ -1257,6 +1257,10 @@ Tradeoff:
 
 The hook is intentionally simple. If the app later needs pagination, background polling, offline mutation queues, or optimistic cache updates across many resources, TanStack Query would be a strong upgrade.
 
+Implementation note:
+
+The hook imports React's `DependencyList` type directly. That keeps the file explicit and avoids relying on the global `React` namespace.
+
 ## 51. Analytics Page Shell
 
 The frontend includes the route `src/app/analytics/[code]/page.tsx` and the client dashboard `src/features/analytics/analytics-dashboard.tsx`.
