@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { ClipboardDocumentIcon, ChartBarIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/components/ui/button";
+import { LinkButton } from "@/components/ui/link-button";
 import { Panel } from "@/components/ui/panel";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { readableUrl } from "@/lib/format";
@@ -51,11 +51,12 @@ export function CreatedLinkCard({ link }: CreatedLinkCardProps) {
           >
             Copy admin key
           </Button>
-          <Link href={`/analytics/${link.code}?adminKey=${encodeURIComponent(link.adminKey)}`}>
-            <Button variant="primary" icon={<ChartBarIcon className="h-4 w-4" />}>
-              Open analytics
-            </Button>
-          </Link>
+          <LinkButton
+            href={`/analytics/${link.code}?adminKey=${encodeURIComponent(link.adminKey)}`}
+            icon={<ChartBarIcon className="h-4 w-4" />}
+          >
+            Open analytics
+          </LinkButton>
         </div>
       </div>
     </Panel>
