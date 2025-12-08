@@ -80,7 +80,7 @@ From the repo root:
 docker compose up --build
 ```
 
-The backend service waits for PostgreSQL, deploys Prisma migrations, and then starts the Node.js server.
+The backend service waits for PostgreSQL, deploys Prisma migrations, and then starts the Node.js server. The frontend service starts the Next.js standalone server on port `3000`.
 
 ## Important API Routes
 

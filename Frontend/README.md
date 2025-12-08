@@ -30,6 +30,10 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5000
 
 This value is read by `src/lib/config.ts`.
 
+## Docker
+
+The root `docker-compose.yml` includes a `frontend` service. It builds this Next.js app and serves the standalone production output on port `3000`.
+
 ## Caching Strategy
 
 The frontend uses a small in-memory cache in `src/lib/request-cache.ts`.

@@ -1567,3 +1567,27 @@ Frontend codebases become hard to onboard when state, API, and styling rules are
 Tradeoff:
 
 It adds another documentation file to maintain, but the clarity is worth it for a fullstack project.
+
+## 63. Frontend Docker Compose Service
+
+The root `docker-compose.yml` includes a `frontend` service.
+
+What this is:
+
+It is the containerized runtime definition for the Next.js frontend.
+
+Why it exists:
+
+A fullstack project should be runnable as a stack. Postgres and backend were already in Compose; adding frontend completes the local production-like topology.
+
+How it works:
+
+The service builds `./Frontend`, injects `NEXT_PUBLIC_API_BASE_URL`, waits for the backend service dependency, and exposes port `3000`.
+
+Why this is a good choice:
+
+It makes the project easier to review and deploy because all primary services are represented in one Compose file.
+
+Tradeoff:
+
+`depends_on` controls start order, not full application readiness. The frontend still handles API errors gracefully if the backend takes a few extra seconds to become ready.
