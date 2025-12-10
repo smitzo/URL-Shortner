@@ -1591,3 +1591,29 @@ It makes the project easier to review and deploy because all primary services ar
 Tradeoff:
 
 `depends_on` controls start order, not full application readiness. The frontend still handles API errors gracefully if the backend takes a few extra seconds to become ready.
+
+## 64. Root Frontend Loading and Error Boundaries
+
+The frontend includes root `loading.tsx` and `error.tsx` files.
+
+What this is:
+
+These are App Router route-level resilience components for the main application shell.
+
+Why it exists:
+
+Production UIs should avoid blank screens. Loading skeletons keep layout stable while route segments load. Error boundaries give users a recovery action instead of a crash page.
+
+How it works:
+
+- `loading.tsx` renders a shell-shaped skeleton.
+- `error.tsx` is a client component because it uses the App Router `reset` callback.
+- the error boundary logs the error to the browser console and lets users retry.
+
+Why this is a good choice:
+
+It improves perceived performance and gives a controlled recovery path. The UI stays Tailwind-only and consistent with the dashboard layout.
+
+Tradeoff:
+
+The error boundary logs only client-side right now. A production observability integration could send these errors to a monitoring service later.
