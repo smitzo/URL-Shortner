@@ -1641,3 +1641,27 @@ It is simple, accessible, and consistent with the rest of the UI.
 Tradeoff:
 
 The not-found page is generic. Future resource-aware routes can add more specific not-found states where useful.
+
+## 66. Clipboard Feedback Hook
+
+The frontend includes `src/hooks/use-clipboard.ts`.
+
+What this is:
+
+It is a small hook for copying values and showing temporary status messages.
+
+Why it exists:
+
+Copy actions are important in a shortener: users copy short URLs and admin keys. Silent copy behavior can feel broken, especially when browser permissions fail.
+
+How it works:
+
+The hook calls `navigator.clipboard.writeText`, sets a success or failure message, and clears the message after a short timeout.
+
+Why this is a good choice:
+
+It keeps clipboard behavior reusable and gives accessible feedback through `role="status"` in the result card.
+
+Tradeoff:
+
+The hook depends on browser clipboard APIs. Older browsers may require manual selection, which the failure message explains.

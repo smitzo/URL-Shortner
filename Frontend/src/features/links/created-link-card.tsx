@@ -7,16 +7,15 @@ import { Panel } from "@/components/ui/panel";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { readableUrl } from "@/lib/format";
 import type { CreatedLink } from "@/types/api";
+import { useClipboard } from "@/hooks/use-clipboard";
 
 type CreatedLinkCardProps = {
   link: CreatedLink;
 };
 
-async function copyText(value: string) {
-  await navigator.clipboard.writeText(value);
-}
-
 export function CreatedLinkCard({ link }: CreatedLinkCardProps) {
+  const clipboard = useClipboard();
+
   return (
     <Panel title="Created link" description="Store the admin key somewhere safe. It is shown once here.">
       <div className="space-y-4">
@@ -40,14 +39,14 @@ export function CreatedLinkCard({ link }: CreatedLinkCardProps) {
           <Button
             variant="secondary"
             icon={<ClipboardDocumentIcon className="h-4 w-4" />}
-            onClick={() => void copyText(link.shortUrl)}
+            onClick={() => void clipboard.copy(link.shortUrl, "Short URL copied.")}
           >
             Copy short URL
           </Button>
           <Button
             variant="secondary"
             icon={<ClipboardDocumentIcon className="h-4 w-4" />}
-            onClick={() => void copyText(link.adminKey)}
+            onClick={() => void clipboard.copy(link.adminKey, "Admin key copied.")}
           >
             Copy admin key
           </Button>
@@ -58,6 +57,11 @@ export function CreatedLinkCard({ link }: CreatedLinkCardProps) {
             Open analytics
           </LinkButton>
         </div>
+        {clipboard.message ? (
+          <p className="text-sm font-medium text-slate-600" role="status">
+            {clipboard.message}
+          </p>
+        ) : null}
       </div>
     </Panel>
   );
