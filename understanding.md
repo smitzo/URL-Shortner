@@ -1617,3 +1617,27 @@ It improves perceived performance and gives a controlled recovery path. The UI s
 Tradeoff:
 
 The error boundary logs only client-side right now. A production observability integration could send these errors to a monitoring service later.
+
+## 65. Global Not-Found Page
+
+The frontend includes `src/app/not-found.tsx`.
+
+What this is:
+
+It is the fallback page for unknown frontend routes.
+
+Why it exists:
+
+Users can mistype URLs, follow stale links, or land on routes that do not exist yet. A controlled not-found state keeps them inside the product instead of showing a generic browser-like error.
+
+How it works:
+
+The page uses the shared app shell, a panel, and a `LinkButton` back to the dashboard.
+
+Why this is a good choice:
+
+It is simple, accessible, and consistent with the rest of the UI.
+
+Tradeoff:
+
+The not-found page is generic. Future resource-aware routes can add more specific not-found states where useful.
