@@ -1665,3 +1665,27 @@ It keeps clipboard behavior reusable and gives accessible feedback through `role
 Tradeoff:
 
 The hook depends on browser clipboard APIs. Older browsers may require manual selection, which the failure message explains.
+
+## 67. Frontend Mutation Queue
+
+The frontend includes `src/hooks/use-mutation-queue.ts`.
+
+What this is:
+
+It is a small hook that serializes client-side mutation tasks.
+
+Why it exists:
+
+Management actions such as saving metadata and toggling status can be clicked repeatedly. If multiple mutations run at once, responses may arrive out of order and leave the UI showing stale state.
+
+How it works:
+
+The hook keeps a promise chain in a ref. Each new task waits for the previous task to settle before running. It exposes a `pending` flag for UI disabling.
+
+Why this is a good choice:
+
+It gives queueing behavior without adding a full state-management library. It is especially useful for forms and buttons that mutate the same link resource.
+
+Tradeoff:
+
+This is an in-memory per-component queue. It does not persist offline mutations. A more advanced app could use a durable background sync queue.
