@@ -1689,3 +1689,5 @@ It gives queueing behavior without adding a full state-management library. It is
 Tradeoff:
 
 This is an in-memory per-component queue. It does not persist offline mutations. A more advanced app could use a durable background sync queue.
+
+The metadata editor and status controls use this hook because both mutate the same link resource. Serializing those actions avoids UI state being overwritten by an older response.

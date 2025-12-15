@@ -7,6 +7,7 @@ import { Field } from "@/components/ui/field";
 import { Panel } from "@/components/ui/panel";
 import { updateLinkMetadata } from "@/lib/links-api";
 import type { PublicLink } from "@/types/api";
+import { useMutationQueue } from "@/hooks/use-mutation-queue";
 
 type MetadataEditorProps = {
   link: PublicLink | null;
@@ -22,6 +23,7 @@ export function MetadataEditor({ link, adminKey, enabled, onUpdated }: MetadataE
   const [expiresAt, setExpiresAt] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const mutationQueue = useMutationQueue();
 
   useEffect(() => {
     setTitle(link?.title ?? "");
@@ -39,15 +41,17 @@ export function MetadataEditor({ link, adminKey, enabled, onUpdated }: MetadataE
     setMessage(null);
 
     try {
-      const updated = await updateLinkMetadata(link.code, adminKey, {
-        title: title.trim() || null,
-        description: description.trim() || null,
-        tags: tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
-        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null
-      });
+      const updated = await mutationQueue.enqueue(() =>
+        updateLinkMetadata(link.code, adminKey, {
+          title: title.trim() || null,
+          description: description.trim() || null,
+          tags: tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+          expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null
+        })
+      );
       onUpdated(updated);
       setMessage("Metadata saved.");
     } catch (error) {
@@ -64,7 +68,7 @@ export function MetadataEditor({ link, adminKey, enabled, onUpdated }: MetadataE
           id="metadataTitle"
           label="Title"
           value={title}
-          disabled={!enabled || !link}
+        disabled={!enabled || !link || mutationQueue.pending}
           onChange={(event) => setTitle(event.target.value)}
         />
         <Field

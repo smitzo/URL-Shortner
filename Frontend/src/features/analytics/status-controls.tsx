@@ -6,6 +6,7 @@ import { Panel } from "@/components/ui/panel";
 import { updateLinkStatus } from "@/lib/links-api";
 import type { PublicLink } from "@/types/api";
 import { useState } from "react";
+import { useMutationQueue } from "@/hooks/use-mutation-queue";
 
 type StatusControlsProps = {
   link: PublicLink | null;
@@ -17,6 +18,7 @@ type StatusControlsProps = {
 export function StatusControls({ link, adminKey, enabled, onUpdated }: StatusControlsProps) {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const mutationQueue = useMutationQueue();
   const canDisable = link?.status === "ACTIVE";
   const nextStatus = canDisable ? "DISABLED" : "ACTIVE";
 
@@ -27,7 +29,7 @@ export function StatusControls({ link, adminKey, enabled, onUpdated }: StatusCon
     setMessage(null);
 
     try {
-      const updated = await updateLinkStatus(link.code, adminKey, nextStatus);
+      const updated = await mutationQueue.enqueue(() => updateLinkStatus(link.code, adminKey, nextStatus));
       onUpdated(updated);
       setMessage(canDisable ? "Link disabled." : "Link reactivated.");
     } catch (error) {
@@ -49,7 +51,7 @@ export function StatusControls({ link, adminKey, enabled, onUpdated }: StatusCon
         <Button
           variant={canDisable ? "danger" : "primary"}
           loading={saving}
-          disabled={!enabled || !link || link.status === "EXPIRED"}
+          disabled={!enabled || !link || link.status === "EXPIRED" || mutationQueue.pending}
           icon={canDisable ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
           onClick={() => void handleUpdate()}
         >
