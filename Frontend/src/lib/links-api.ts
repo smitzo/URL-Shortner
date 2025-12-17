@@ -9,7 +9,8 @@ import type {
   CreateLinkPayload,
   LinkAnalytics,
   LinkStatus,
-  PublicLink
+  PublicLink,
+  HealthStatus
 } from "@/types/api";
 
 const analyticsCacheKey = (code: string, query: AnalyticsQuery) =>
@@ -20,6 +21,10 @@ export function createShortLink(payload: CreateLinkPayload) {
     method: "POST",
     body: payload
   });
+}
+
+export function getHealthStatus() {
+  return cachedRequest("health", 10_000, () => apiRequest<HealthStatus>("/health"));
 }
 
 export function getPublicLink(code: string) {

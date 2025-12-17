@@ -1691,3 +1691,31 @@ Tradeoff:
 This is an in-memory per-component queue. It does not persist offline mutations. A more advanced app could use a durable background sync queue.
 
 The metadata editor and status controls use this hook because both mutate the same link resource. Serializing those actions avoids UI state being overwritten by an older response.
+
+## 68. API Status Indicator
+
+The frontend includes `src/components/api-status.tsx`.
+
+What this is:
+
+It is a small status pill in the app shell that checks the backend `/health` endpoint.
+
+Why it exists:
+
+Fullstack apps can fail in two halves: the frontend can load while the backend is down or misconfigured. A visible API status helps users and developers identify that problem quickly.
+
+How it works:
+
+The component loads `/health` through the endpoint layer and request cache. It shows:
+
+- `API online` when the backend responds;
+- `API offline` when the request fails;
+- `Checking API` while the request is in progress.
+
+Why this is a good choice:
+
+It improves developer experience during local Docker runs and makes production troubleshooting easier. The health result is cached briefly so navigation does not spam the backend.
+
+Tradeoff:
+
+The indicator is informational. It does not replace route-level error handling because specific API requests can still fail independently.

@@ -91,3 +91,8 @@ export type AuditEvent = {
   changes: Record<string, unknown>;
   createdAt: string;
 };
+
+export type HealthStatus = {
+  status: "ok";
+  service: string;
+};

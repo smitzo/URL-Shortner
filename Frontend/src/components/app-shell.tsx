@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChartBarSquareIcon, LinkIcon } from "@heroicons/react/24/outline";
+import { ApiStatus } from "@/components/api-status";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
@@ -17,6 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
           </Link>
           <nav className="flex items-center gap-2 text-sm font-medium text-slate-600">
+            <ApiStatus />
             <Link
               href="/"
               className="inline-flex items-center gap-2 rounded-md px-3 py-2 hover:bg-slate-100 hover:text-ink-950"
