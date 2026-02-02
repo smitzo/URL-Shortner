@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { env } from "@/config/env.js";
 import { asyncHandler } from "@/utils/async-handler.js";
+import { sendSuccess } from "@/utils/http-response.js";
 import { buildClickContext } from "@/modules/links/request-context.js";
 import {
   analyticsParamSchema,
@@ -26,14 +27,16 @@ export const createLinkController = asyncHandler(async (req: Request, res: Respo
   const input = createLinkSchema.parse(req.body);
   const { link, adminKey, shortUrl } = await createLink(input);
 
-  res.status(201).json({
-    data: {
+  sendSuccess(
+    res,
+    {
       ...publicLink(link),
       shortUrl,
       adminKey,
       analyticsUrl: `${env.WEB_BASE_URL.replace(/\/$/, "")}/analytics/${link.code}`
-    }
-  });
+    },
+    { status: 201 }
+  );
 });
 
 export const analyticsController = asyncHandler(async (req: Request, res: Response) => {
@@ -41,7 +44,7 @@ export const analyticsController = asyncHandler(async (req: Request, res: Respon
   const query = analyticsQuerySchema.parse(req.query);
   const analytics = await getAnalytics(params.code, getAdminKey(req), query);
 
-  res.json({ data: analytics });
+  sendSuccess(res, analytics);
 });
 
 export const redirectController = asyncHandler(async (req: Request, res: Response) => {
