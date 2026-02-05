@@ -140,7 +140,7 @@ export async function getAnalytics(code: string, adminKey: string | undefined, q
       prisma.clickEvent.findMany({
         where,
         orderBy: { clickedAt: "desc" },
-        take: 25,
+        take: query.limit,
         select: {
           id: true,
           clickedAt: true,
