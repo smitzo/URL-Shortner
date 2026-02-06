@@ -10,3 +10,4 @@ process.env.RATE_LIMIT_WINDOW_MS = "60000";
 process.env.RATE_LIMIT_MAX = "1000";
 process.env.CREATE_LINK_LIMIT_MAX = "1000";
 process.env.REDIRECT_CACHE_SECONDS = "0";
+process.env.IP_HASH_SALT = "test-ip-hash-salt-value";
