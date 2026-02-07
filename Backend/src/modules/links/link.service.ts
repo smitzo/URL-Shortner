@@ -94,6 +94,16 @@ export async function getRedirectLink(code: string) {
   return link;
 }
 
+export async function getPublicLink(code: string) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  return link;
+}
+
 export async function recordClick(
   linkId: string,
   context: {

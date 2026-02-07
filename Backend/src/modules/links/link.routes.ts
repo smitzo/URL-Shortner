@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   analyticsController,
   createLinkController,
+  getLinkController,
   redirectController
 } from "@/modules/links/link.controller.js";
 import { createLinkRateLimit } from "@/middleware/rate-limit.js";
@@ -26,5 +27,10 @@ linkRouter.get(
   validateRequest("params", analyticsParamSchema),
   validateRequest("query", analyticsQuerySchema),
   analyticsController
+);
+linkRouter.get(
+  "/api/links/:code",
+  validateRequest("params", codeParamSchema),
+  getLinkController
 );
 linkRouter.get("/:code", validateRequest("params", codeParamSchema), redirectController);
