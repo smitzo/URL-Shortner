@@ -16,6 +16,7 @@ The backend is the most complete part right now. It supports short-link creation
 - Fetch protected analytics through `GET /api/links/:code/analytics`.
 - Fetch public link metadata through `GET /api/links/:code`.
 - Reject unsafe target URLs such as private network and localhost addresses.
+- Block reserved short codes that would collide with platform routes.
 - Validate environment variables at startup.
 - Use PostgreSQL migrations through Prisma.
 - Include request IDs in error responses for production debugging.
