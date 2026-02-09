@@ -3,13 +3,18 @@ import { env } from "@/config/env.js";
 import { asyncHandler } from "@/utils/async-handler.js";
 import { sendSuccess } from "@/utils/http-response.js";
 import { buildClickContext } from "@/modules/links/request-context.js";
-import type { AnalyticsQuery, CreateLinkInput } from "@/modules/links/link.schemas.js";
+import type {
+  AnalyticsQuery,
+  CreateLinkInput,
+  UpdateLinkStatusInput
+} from "@/modules/links/link.schemas.js";
 import {
   createLink,
   getAnalytics,
   getPublicLink,
   getRedirectLink,
-  recordClick
+  recordClick,
+  updateLinkStatus
 } from "@/modules/links/link.service.js";
 import { publicLink } from "@/modules/links/link.presenter.js";
 
@@ -23,6 +28,7 @@ type CodeParams = { code: string };
 type CreateLinkRequest = Request<Record<string, never>, unknown, CreateLinkInput>;
 type AnalyticsRequest = Request<CodeParams>;
 type RedirectRequest = Request<CodeParams>;
+type UpdateStatusRequest = Request<CodeParams, unknown, UpdateLinkStatusInput>;
 
 export const createLinkController = asyncHandler(async (req: CreateLinkRequest, res: Response) => {
   const { link, adminKey, shortUrl } = await createLink(req.body);
@@ -51,6 +57,14 @@ export const getLinkController = asyncHandler(async (req: RedirectRequest, res: 
 
   sendSuccess(res, publicLink(link));
 });
+
+export const updateLinkStatusController = asyncHandler(
+  async (req: UpdateStatusRequest, res: Response) => {
+    const link = await updateLinkStatus(req.params.code, getAdminKey(req), req.body);
+
+    sendSuccess(res, publicLink(link));
+  }
+);
 
 export const redirectController = asyncHandler(async (req: RedirectRequest, res: Response) => {
   const link = await getRedirectLink(req.params.code);

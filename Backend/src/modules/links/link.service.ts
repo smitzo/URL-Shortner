@@ -3,6 +3,7 @@ import { prisma } from "@/db/prisma.js";
 import { AppError } from "@/lib/app-error.js";
 import { assertPublicHttpUrl } from "@/utils/url.js";
 import type { CreateLinkInput, AnalyticsQuery } from "@/modules/links/link.schemas.js";
+import type { UpdateLinkStatusInput } from "@/modules/links/link.schemas.js";
 import { createShortCode } from "@/modules/links/code.js";
 import { isReservedCode } from "@/modules/links/reserved-codes.js";
 import { createAdminKey, hashAdminKey, verifyAdminKey } from "@/modules/links/security.js";
@@ -113,6 +114,29 @@ export async function getPublicLink(code: string) {
   }
 
   return link;
+}
+
+export async function updateLinkStatus(
+  code: string,
+  adminKey: string | undefined,
+  input: UpdateLinkStatusInput
+) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  const effectiveAdminKey = adminKey || input.adminKey;
+
+  if (!effectiveAdminKey || !verifyAdminKey(effectiveAdminKey, link.adminKeyHash)) {
+    throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
+  }
+
+  return prisma.link.update({
+    where: { id: link.id },
+    data: { status: input.status }
+  });
 }
 
 export async function recordClick(

@@ -15,6 +15,7 @@ The backend is the most complete part right now. It supports short-link creation
 - Record click analytics asynchronously.
 - Fetch protected analytics through `GET /api/links/:code/analytics`.
 - Fetch public link metadata through `GET /api/links/:code`.
+- Disable or reactivate links through `PATCH /api/links/:code/status`.
 - Reject unsafe target URLs such as private network and localhost addresses.
 - Block reserved short codes that would collide with platform routes.
 - Validate environment variables at startup.
@@ -78,6 +79,7 @@ The backend service waits for PostgreSQL, deploys Prisma migrations, and then st
 - `GET /ready`: database readiness check.
 - `POST /api/links`: create a short link.
 - `GET /api/links/:code`: read public metadata for a short link.
+- `PATCH /api/links/:code/status`: disable or reactivate a short link with an admin key.
 - `GET /api/links/:code/analytics`: read admin-key protected analytics.
 - `GET /:code`: redirect to the original target URL.
 

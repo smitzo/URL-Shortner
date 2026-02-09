@@ -44,5 +44,11 @@ export const analyticsParamSchema = z.object({
   code: z.string().trim().regex(customCodePattern)
 });
 
+export const updateLinkStatusSchema = z.object({
+  adminKey: z.string().min(24).optional(),
+  status: z.enum(["ACTIVE", "DISABLED"])
+});
+
 export type CreateLinkInput = z.infer<typeof createLinkSchema>;
 export type AnalyticsQuery = z.infer<typeof analyticsQuerySchema>;
+export type UpdateLinkStatusInput = z.infer<typeof updateLinkStatusSchema>;
