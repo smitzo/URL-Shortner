@@ -3,7 +3,10 @@ import { prisma } from "@/db/prisma.js";
 import { AppError } from "@/lib/app-error.js";
 import { assertPublicHttpUrl } from "@/utils/url.js";
 import type { CreateLinkInput, AnalyticsQuery } from "@/modules/links/link.schemas.js";
-import type { UpdateLinkStatusInput } from "@/modules/links/link.schemas.js";
+import type {
+  UpdateLinkMetadataInput,
+  UpdateLinkStatusInput
+} from "@/modules/links/link.schemas.js";
 import { createShortCode } from "@/modules/links/code.js";
 import { isReservedCode } from "@/modules/links/reserved-codes.js";
 import { createAdminKey, hashAdminKey, verifyAdminKey } from "@/modules/links/security.js";
@@ -136,6 +139,40 @@ export async function updateLinkStatus(
   return prisma.link.update({
     where: { id: link.id },
     data: { status: input.status }
+  });
+}
+
+export async function updateLinkMetadata(
+  code: string,
+  adminKey: string | undefined,
+  input: UpdateLinkMetadataInput
+) {
+  const link = await prisma.link.findUnique({ where: { code } });
+
+  if (!link) {
+    throw new AppError(404, "LINK_NOT_FOUND", "Short link was not found.");
+  }
+
+  const effectiveAdminKey = adminKey || input.adminKey;
+
+  if (!effectiveAdminKey || !verifyAdminKey(effectiveAdminKey, link.adminKeyHash)) {
+    throw new AppError(401, "INVALID_ADMIN_KEY", "A valid admin key is required.");
+  }
+
+  const expiresAt = input.expiresAt === undefined ? undefined : input.expiresAt ? new Date(input.expiresAt) : null;
+
+  if (expiresAt && expiresAt.getTime() <= Date.now()) {
+    throw new AppError(400, "INVALID_EXPIRY", "Expiration must be in the future.");
+  }
+
+  return prisma.link.update({
+    where: { id: link.id },
+    data: {
+      ...(input.title !== undefined ? { title: input.title } : {}),
+      ...(input.description !== undefined ? { description: input.description } : {}),
+      ...(input.tags !== undefined ? { tags: input.tags } : {}),
+      ...(expiresAt !== undefined ? { expiresAt } : {})
+    }
   });
 }
 

@@ -6,6 +6,7 @@ import { buildClickContext } from "@/modules/links/request-context.js";
 import type {
   AnalyticsQuery,
   CreateLinkInput,
+  UpdateLinkMetadataInput,
   UpdateLinkStatusInput
 } from "@/modules/links/link.schemas.js";
 import {
@@ -14,6 +15,7 @@ import {
   getPublicLink,
   getRedirectLink,
   recordClick,
+  updateLinkMetadata,
   updateLinkStatus
 } from "@/modules/links/link.service.js";
 import { publicLink } from "@/modules/links/link.presenter.js";
@@ -29,6 +31,7 @@ type CreateLinkRequest = Request<Record<string, never>, unknown, CreateLinkInput
 type AnalyticsRequest = Request<CodeParams>;
 type RedirectRequest = Request<CodeParams>;
 type UpdateStatusRequest = Request<CodeParams, unknown, UpdateLinkStatusInput>;
+type UpdateMetadataRequest = Request<CodeParams, unknown, UpdateLinkMetadataInput>;
 
 export const createLinkController = asyncHandler(async (req: CreateLinkRequest, res: Response) => {
   const { link, adminKey, shortUrl } = await createLink(req.body);
@@ -61,6 +64,14 @@ export const getLinkController = asyncHandler(async (req: RedirectRequest, res: 
 export const updateLinkStatusController = asyncHandler(
   async (req: UpdateStatusRequest, res: Response) => {
     const link = await updateLinkStatus(req.params.code, getAdminKey(req), req.body);
+
+    sendSuccess(res, publicLink(link));
+  }
+);
+
+export const updateLinkMetadataController = asyncHandler(
+  async (req: UpdateMetadataRequest, res: Response) => {
+    const link = await updateLinkMetadata(req.params.code, getAdminKey(req), req.body);
 
     sendSuccess(res, publicLink(link));
   }
