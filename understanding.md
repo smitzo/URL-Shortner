@@ -351,3 +351,36 @@ Partial updates are useful for frontend forms because the client does not need t
 Tradeoff:
 
 The endpoint does not currently keep a metadata change history. For a larger multi-user product, audit tables would be a strong next step.
+
+## 20. Admin Link Summary Endpoint
+
+The backend supports `GET /api/links/:code/admin`.
+
+What this feature is:
+
+It is a lightweight owner-only endpoint that returns:
+
+- the public link representation;
+- total click count;
+- the most recent click timestamp.
+
+Why this exists:
+
+Full analytics can be more expensive because it groups events by browser, OS, device, referrer, and day. A dashboard often needs a quick summary first: "Is this link active? How many total clicks does it have? When was it last used?" Loading that summary separately keeps dashboard screens snappy and avoids running heavier aggregation queries when the user only needs a small operational view.
+
+How it works:
+
+1. The route validates the short code.
+2. The controller reads the admin key from `X-Admin-Key` or query string.
+3. The service loads the link by unique code.
+4. The admin key is verified against the stored hash.
+5. Two small queries run in parallel: total click count and newest click row.
+6. The response returns a stable `{ data: ... }` envelope.
+
+Why this is the best choice:
+
+Separating summary from analytics lets the frontend choose the right data cost for each screen. It also makes future caching easier: summary data can be refreshed frequently, while full analytics can be loaded on demand.
+
+Tradeoff:
+
+This adds one more API endpoint, but the separation of concerns is worth it because summary and analytics have different performance profiles.

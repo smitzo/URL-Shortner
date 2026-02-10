@@ -11,6 +11,7 @@ import type {
 } from "@/modules/links/link.schemas.js";
 import {
   createLink,
+  getAdminLinkSummary,
   getAnalytics,
   getPublicLink,
   getRedirectLink,
@@ -60,6 +61,18 @@ export const getLinkController = asyncHandler(async (req: RedirectRequest, res: 
 
   sendSuccess(res, publicLink(link));
 });
+
+export const adminLinkSummaryController = asyncHandler(
+  async (req: RedirectRequest, res: Response) => {
+    const summary = await getAdminLinkSummary(req.params.code, getAdminKey(req));
+
+    sendSuccess(res, {
+      link: publicLink(summary.link),
+      totalClicks: summary.totalClicks,
+      lastClickedAt: summary.lastClickedAt
+    });
+  }
+);
 
 export const updateLinkStatusController = asyncHandler(
   async (req: UpdateStatusRequest, res: Response) => {
