@@ -19,30 +19,46 @@ export const codeParamSchema = z.object({
   code: z.string().trim().regex(customCodePattern)
 });
 
+function validateDateWindow(
+  value: { from?: string; to?: string },
+  context: z.RefinementCtx
+) {
+  if (!value.from || !value.to) {
+    return;
+  }
+
+  if (new Date(value.from).getTime() > new Date(value.to).getTime()) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["from"],
+      message: "The from date must be before the to date."
+    });
+  }
+}
+
+const analyticsWindowFields = {
+  adminKey: z.string().min(24).optional(),
+  from: z.string().datetime().optional(),
+  to: z.string().datetime().optional()
+};
+
 export const analyticsQuerySchema = z
   .object({
-    adminKey: z.string().min(24).optional(),
-    from: z.string().datetime().optional(),
-    to: z.string().datetime().optional(),
+    ...analyticsWindowFields,
     limit: z.coerce.number().int().min(1).max(100).default(25)
   })
-  .superRefine((value, context) => {
-    if (!value.from || !value.to) {
-      return;
-    }
-
-    if (new Date(value.from).getTime() > new Date(value.to).getTime()) {
-      context.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ["from"],
-        message: "The from date must be before the to date."
-      });
-    }
-  });
+  .superRefine(validateDateWindow);
 
 export const analyticsParamSchema = z.object({
   code: z.string().trim().regex(customCodePattern)
 });
+
+export const analyticsExportQuerySchema = z
+  .object({
+    ...analyticsWindowFields,
+    limit: z.coerce.number().int().min(1).max(5000).default(1000)
+  })
+  .superRefine(validateDateWindow);
 
 export const updateLinkStatusSchema = z.object({
   adminKey: z.string().min(24).optional(),
@@ -59,5 +75,6 @@ export const updateLinkMetadataSchema = z.object({
 
 export type CreateLinkInput = z.infer<typeof createLinkSchema>;
 export type AnalyticsQuery = z.infer<typeof analyticsQuerySchema>;
+export type AnalyticsExportQuery = z.infer<typeof analyticsExportQuerySchema>;
 export type UpdateLinkStatusInput = z.infer<typeof updateLinkStatusSchema>;
 export type UpdateLinkMetadataInput = z.infer<typeof updateLinkMetadataSchema>;

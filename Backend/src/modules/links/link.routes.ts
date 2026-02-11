@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   adminLinkSummaryController,
   analyticsController,
+  analyticsExportController,
   createLinkController,
   getLinkController,
   redirectController,
@@ -12,6 +13,7 @@ import { createLinkRateLimit } from "@/middleware/rate-limit.js";
 import { validateRequest } from "@/middleware/validate.js";
 import {
   analyticsParamSchema,
+  analyticsExportQuerySchema,
   analyticsQuerySchema,
   codeParamSchema,
   createLinkSchema,
@@ -32,6 +34,12 @@ linkRouter.get(
   validateRequest("params", analyticsParamSchema),
   validateRequest("query", analyticsQuerySchema),
   analyticsController
+);
+linkRouter.get(
+  "/api/links/:code/analytics/export.csv",
+  validateRequest("params", analyticsParamSchema),
+  validateRequest("query", analyticsExportQuerySchema),
+  analyticsExportController
 );
 linkRouter.get(
   "/api/links/:code/admin",

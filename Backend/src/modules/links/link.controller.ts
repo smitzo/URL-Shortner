@@ -4,6 +4,7 @@ import { asyncHandler } from "@/utils/async-handler.js";
 import { sendSuccess } from "@/utils/http-response.js";
 import { buildClickContext } from "@/modules/links/request-context.js";
 import type {
+  AnalyticsExportQuery,
   AnalyticsQuery,
   CreateLinkInput,
   UpdateLinkMetadataInput,
@@ -11,6 +12,7 @@ import type {
 } from "@/modules/links/link.schemas.js";
 import {
   createLink,
+  getAnalyticsExportRows,
   getAdminLinkSummary,
   getAnalytics,
   getPublicLink,
@@ -20,6 +22,7 @@ import {
   updateLinkStatus
 } from "@/modules/links/link.service.js";
 import { publicLink } from "@/modules/links/link.presenter.js";
+import { toCsv } from "@/utils/csv.js";
 
 function getAdminKey(req: Request) {
   const headerKey = req.header("x-admin-key");
@@ -30,6 +33,7 @@ function getAdminKey(req: Request) {
 type CodeParams = { code: string };
 type CreateLinkRequest = Request<Record<string, never>, unknown, CreateLinkInput>;
 type AnalyticsRequest = Request<CodeParams>;
+type AnalyticsExportRequest = Request<CodeParams>;
 type RedirectRequest = Request<CodeParams>;
 type UpdateStatusRequest = Request<CodeParams, unknown, UpdateLinkStatusInput>;
 type UpdateMetadataRequest = Request<CodeParams, unknown, UpdateLinkMetadataInput>;
@@ -55,6 +59,29 @@ export const analyticsController = asyncHandler(async (req: AnalyticsRequest, re
 
   sendSuccess(res, analytics);
 });
+
+export const analyticsExportController = asyncHandler(
+  async (req: AnalyticsExportRequest, res: Response) => {
+    const query = req.query as unknown as AnalyticsExportQuery;
+    const rows = await getAnalyticsExportRows(req.params.code, getAdminKey(req), query);
+    const csv = toCsv(
+      rows.map((row) => ({
+        id: row.id,
+        clickedAt: row.clickedAt,
+        referer: row.referer,
+        browser: row.browser,
+        os: row.os,
+        device: row.device,
+        country: row.country,
+        city: row.city
+      }))
+    );
+
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader("Content-Disposition", `attachment; filename="${req.params.code}-clicks.csv"`);
+    res.status(200).send(csv);
+  }
+);
 
 export const getLinkController = asyncHandler(async (req: RedirectRequest, res: Response) => {
   const link = await getPublicLink(req.params.code);
