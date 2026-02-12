@@ -453,3 +453,37 @@ OpenAPI is an industry standard. It works with documentation renderers, client g
 Tradeoff:
 
 The spec must be kept in sync with code. That is why backend feature commits should update `docs/openapi.yaml` when they change the public API.
+
+## 23. Manual API Examples
+
+The project includes `docs/api-examples.http`.
+
+What this feature is:
+
+It is a plain HTTP request collection that can be opened by editors and REST clients that understand `.http` files.
+
+Why it exists:
+
+OpenAPI is excellent for contracts, but developers often need quick executable examples. The `.http` file shows the practical sequence:
+
+1. check health;
+2. create a link;
+3. copy the returned admin key;
+4. fetch metadata;
+5. update metadata;
+6. disable or reactivate the link;
+7. fetch analytics;
+8. export CSV;
+9. follow the redirect.
+
+How it works:
+
+Each section is separated by `###`. A developer can replace the placeholder admin key with the key from the create response and then send requests one by one.
+
+Why this is useful in an industry-grade project:
+
+It reduces onboarding friction. New developers and reviewers can exercise the API without reading controllers first, and support engineers can reproduce flows quickly.
+
+Tradeoff:
+
+The examples are not automated tests. They are living documentation and must be updated when routes change.
