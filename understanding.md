@@ -518,3 +518,29 @@ HSTS tells browsers to force HTTPS for a host. That is good in production, but p
 Tradeoff:
 
 Security headers do not replace authentication, validation, rate limiting, or deployment-level protections. They are one layer in a layered security model.
+
+## 25. API Cache-Control
+
+The backend applies `Cache-Control: no-store` to `/api` responses.
+
+What this feature is:
+
+It is a small middleware named `noStoreApiResponses`.
+
+Why it exists:
+
+API responses may contain admin-owned data such as analytics summaries, click counts, metadata, and CSV exports. Browsers, shared proxies, or reverse proxies should not reuse stale copies of these responses unless the backend explicitly designs for caching.
+
+How it works:
+
+1. Requests entering `/api` pass through the cache-control middleware.
+2. The middleware sets `Cache-Control: no-store`.
+3. The route continues through rate limiting and normal handlers.
+
+Why redirects are handled differently:
+
+Redirects are not under `/api`; they use their own `Cache-Control: private, max-age=...` header in the redirect controller. Redirect caching can improve user-facing performance, but API JSON should favor correctness and privacy.
+
+Why this is the best choice now:
+
+It is conservative and safe. Later, specific public endpoints could opt into caching if there is a measured performance need.
