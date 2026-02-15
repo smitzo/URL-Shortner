@@ -544,3 +544,34 @@ Redirects are not under `/api`; they use their own `Cache-Control: private, max-
 Why this is the best choice now:
 
 It is conservative and safe. Later, specific public endpoints could opt into caching if there is a measured performance need.
+
+## 26. Runtime Version Endpoint
+
+The backend supports `GET /version`.
+
+What this feature is:
+
+It returns lightweight deployment metadata:
+
+- service name;
+- app version;
+- git SHA;
+- runtime environment.
+
+Why it exists:
+
+In production, teams often need to answer "what code is actually running?" without SSH access or container inspection. A version endpoint helps support, QA, and operations compare observed behavior against a known release.
+
+How it works:
+
+1. `APP_VERSION` and `GIT_SHA` are read through the validated environment layer.
+2. The route returns them through the standard success envelope.
+3. Docker Compose supplies default local values, while real deployments can inject release-specific values.
+
+Why this is a good choice:
+
+The endpoint does not expose secrets or database state. It is safe to keep public in most internal deployments and very useful during rollout debugging.
+
+Tradeoff:
+
+Some security teams prefer not to expose version details publicly. If this service were deployed on the open internet under a stricter policy, the route could be moved behind internal networking or authentication.

@@ -4,6 +4,9 @@ GET http://localhost:5000/health
 ### Readiness
 GET http://localhost:5000/ready
 
+### Version
+GET http://localhost:5000/version
+
 ### Create short link
 POST http://localhost:5000/api/links
 Content-Type: application/json
