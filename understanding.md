@@ -616,3 +616,30 @@ JSON changes keep the audit model flexible while the product is still evolving. 
 Tradeoff:
 
 JSON audit payloads are less strict than fully normalized audit tables. If the project later needs compliance-grade reporting, the event schema should become more formal and possibly append-only with actor identity.
+
+## 28. Readiness Latency
+
+The `/ready` endpoint reports `databaseLatencyMs`.
+
+What this feature is:
+
+It is a small operational enhancement to the readiness check. The backend still runs a simple `SELECT 1`, but it now measures how long the query took.
+
+Why it exists:
+
+A binary ready/not-ready response is useful, but latency adds early warning value. If the database is technically reachable but suddenly takes much longer to respond, deployments and health dashboards can catch that symptom before users experience widespread failures.
+
+How it works:
+
+1. The route records `performance.now()` before the database probe.
+2. Prisma runs `SELECT 1`.
+3. The route calculates elapsed milliseconds.
+4. The readiness response includes `databaseLatencyMs`.
+
+Why this is the best current choice:
+
+It adds useful observability without introducing a metrics stack yet. It is also cheap: `SELECT 1` is minimal database work.
+
+Tradeoff:
+
+The measurement is request-local and not a historical metric. A production deployment should still export metrics to a monitoring system later.

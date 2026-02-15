@@ -83,7 +83,7 @@ The backend service waits for PostgreSQL, deploys Prisma migrations, and then st
 ## Important API Routes
 
 - `GET /health`: process health check.
-- `GET /ready`: database readiness check.
+- `GET /ready`: database readiness check with query latency.
 - `GET /version`: service version and deployment metadata.
 - `POST /api/links`: create a short link.
 - `GET /api/links/:code`: read public metadata for a short link.
