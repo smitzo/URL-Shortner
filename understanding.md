@@ -575,3 +575,44 @@ The endpoint does not expose secrets or database state. It is safe to keep publi
 Tradeoff:
 
 Some security teams prefer not to expose version details publicly. If this service were deployed on the open internet under a stricter policy, the route could be moved behind internal networking or authentication.
+
+## 27. Link Audit Events
+
+The backend stores owner-action audit events in `LinkAuditEvent` and exposes them through `GET /api/links/:code/audit`.
+
+What this feature is:
+
+It is an audit trail for important link lifecycle actions:
+
+- link creation;
+- status changes;
+- metadata changes.
+
+Why it exists:
+
+Production systems should not make important state changes invisible. If a link is disabled, reactivated, renamed, retagged, or given a new expiration date, the owner should have a history of that change. Audit trails are useful for debugging, support, compliance review, and team accountability.
+
+How the database model works:
+
+`LinkAuditEvent` belongs to `Link` through `linkId`. It stores:
+
+- `action`: a stable action name such as `STATUS_UPDATED`;
+- `changes`: JSON payload describing what changed;
+- `createdAt`: timestamp of the event.
+
+The table is indexed by `(linkId, createdAt)` so the backend can quickly load recent events for one link.
+
+How the API works:
+
+1. The route validates the short code.
+2. The admin key is required.
+3. The service verifies the admin key against the link.
+4. The latest 100 audit events are returned newest first.
+
+Why this is a good design:
+
+JSON changes keep the audit model flexible while the product is still evolving. A strongly typed audit table per event would be more rigid and heavier. The action string plus JSON payload gives enough structure for the current backend while preserving speed of development.
+
+Tradeoff:
+
+JSON audit payloads are less strict than fully normalized audit tables. If the project later needs compliance-grade reporting, the event schema should become more formal and possibly append-only with actor identity.

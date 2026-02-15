@@ -5,6 +5,7 @@ import {
   analyticsExportController,
   createLinkController,
   getLinkController,
+  linkAuditController,
   redirectController,
   updateLinkMetadataController,
   updateLinkStatusController
@@ -45,6 +46,11 @@ linkRouter.get(
   "/api/links/:code/admin",
   validateRequest("params", codeParamSchema),
   adminLinkSummaryController
+);
+linkRouter.get(
+  "/api/links/:code/audit",
+  validateRequest("params", codeParamSchema),
+  linkAuditController
 );
 linkRouter.get(
   "/api/links/:code",

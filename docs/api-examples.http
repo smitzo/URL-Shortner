@@ -26,6 +26,10 @@ GET http://localhost:5000/api/links/next-docs
 GET http://localhost:5000/api/links/next-docs/admin
 X-Admin-Key: replace-with-admin-key-from-create-response
 
+### Audit events
+GET http://localhost:5000/api/links/next-docs/audit
+X-Admin-Key: replace-with-admin-key-from-create-response
+
 ### Update metadata
 PATCH http://localhost:5000/api/links/next-docs
 Content-Type: application/json
