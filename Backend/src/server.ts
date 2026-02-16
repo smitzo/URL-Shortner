@@ -13,8 +13,20 @@ server.listen(env.PORT, () => {
 
 async function shutdown(signal: string) {
   logger.info({ signal }, "Shutdown signal received");
+
+  const timeout = setTimeout(() => {
+    logger.error(
+      { signal, timeoutMs: env.SHUTDOWN_TIMEOUT_MS },
+      "Forced shutdown after timeout"
+    );
+    process.exit(1);
+  }, env.SHUTDOWN_TIMEOUT_MS);
+
+  timeout.unref();
+
   server.close(async () => {
     await disconnectPrisma();
+    clearTimeout(timeout);
     process.exit(0);
   });
 }
