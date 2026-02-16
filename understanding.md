@@ -672,3 +672,34 @@ It matches common container orchestration behavior. Kubernetes, Docker, and proc
 Tradeoff:
 
 If a request legitimately needs longer than the timeout, it may be cut off. The timeout should be tuned based on real endpoint latency and deployment requirements.
+
+## 30. Backend Runbook
+
+The project includes `docs/backend-runbook.md`.
+
+What this document is:
+
+It is an operations guide for running the backend after it leaves a developer's laptop.
+
+Why it exists:
+
+Production readiness is not only code. Teams need to know how to deploy, migrate, observe, and recover the service. Without a runbook, operational knowledge stays trapped in one developer's head.
+
+What it covers:
+
+- service overview;
+- required environment variables;
+- deployment steps;
+- migration policy;
+- logging expectations;
+- incident checks;
+- backup and recovery;
+- security reminders.
+
+Why this is a good project choice:
+
+The backend now has multiple operational concerns: migrations, Docker, request IDs, audit logs, rate limits, and privacy salts. A runbook ties those pieces together so the service can be operated repeatably.
+
+Tradeoff:
+
+The runbook is documentation, so it must be maintained. Any future deployment change should update it.
