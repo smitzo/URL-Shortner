@@ -727,3 +727,32 @@ Good production projects preserve decision context. Code shows what exists today
 Tradeoff:
 
 ADRs require discipline. They should be added for meaningful decisions, not every tiny implementation detail.
+
+## 32. Robots Policy
+
+The backend serves `GET /robots.txt` with `Disallow: /`.
+
+What this feature is:
+
+It is a crawler policy that asks search engines not to index the backend's paths.
+
+Why it exists:
+
+URL shorteners can accidentally expose public paths that are not meant to become search results. A short link may point to a private-but-shareable document, a temporary campaign, or a staging resource. Even though `robots.txt` is voluntary and not a security boundary, it is a responsible default.
+
+How it works:
+
+The route returns plain text:
+
+```txt
+User-agent: *
+Disallow: /
+```
+
+Why this is a good choice:
+
+It is simple, cheap, and clear. Search engines that honor robots rules will avoid crawling and indexing short-link paths.
+
+Tradeoff:
+
+Malicious crawlers can ignore `robots.txt`. Sensitive destinations must still be protected at the destination application, not by the shortener.

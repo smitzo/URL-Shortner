@@ -25,6 +25,12 @@ paths:
       responses:
         "200":
           description: Backend version, git SHA, and environment.
+  /robots.txt:
+    get:
+      summary: Crawler policy
+      responses:
+        "200":
+          description: Plain text robots policy.
   /api/links:
     post:
       summary: Create a short link
