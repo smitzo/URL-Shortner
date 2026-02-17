@@ -756,3 +756,27 @@ It is simple, cheap, and clear. Search engines that honor robots rules will avoi
 Tradeoff:
 
 Malicious crawlers can ignore `robots.txt`. Sensitive destinations must still be protected at the destination application, not by the shortener.
+
+## 33. Frontend Environment Configuration
+
+The frontend reads its backend URL from `NEXT_PUBLIC_API_BASE_URL` through `src/lib/config.ts`.
+
+What this is:
+
+It is a tiny typed configuration module for browser-safe frontend environment values.
+
+Why it exists:
+
+Frontend code needs to call the backend from many places: create link, read analytics, export CSV, update metadata, and manage status. If every component reads `process.env` directly, the app becomes harder to deploy and easier to misconfigure.
+
+How it works:
+
+`config.apiBaseUrl` strips a trailing slash and falls back to `http://localhost:5000` for local development.
+
+Why this is a good choice:
+
+A single config module keeps deployment assumptions explicit. It also makes future changes easier, such as switching to an API gateway or same-origin reverse proxy.
+
+Tradeoff:
+
+Only variables prefixed with `NEXT_PUBLIC_` are available in the browser. Secrets must never be placed here.
