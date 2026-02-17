@@ -703,3 +703,27 @@ The backend now has multiple operational concerns: migrations, Docker, request I
 Tradeoff:
 
 The runbook is documentation, so it must be maintained. Any future deployment change should update it.
+
+## 31. Architecture Decision Records
+
+The project uses lightweight Architecture Decision Records under `docs/decisions`.
+
+What this feature is:
+
+An ADR is a short document that captures an important engineering decision, the alternatives considered, and the consequences.
+
+Why it exists:
+
+As the project grows, people will ask why the backend uses Express, Prisma, Zod, Pino, and PostgreSQL. An ADR answers that without relying on memory.
+
+How it works:
+
+`001-backend-stack.md` records the backend stack decision. Future decisions can be added as numbered files.
+
+Why this is useful:
+
+Good production projects preserve decision context. Code shows what exists today, but ADRs explain why the team chose it and what tradeoffs were accepted.
+
+Tradeoff:
+
+ADRs require discipline. They should be added for meaningful decisions, not every tiny implementation detail.
