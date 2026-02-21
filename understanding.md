@@ -908,3 +908,27 @@ It creates a clean boundary between product components and transport details. It
 Tradeoff:
 
 The endpoint layer is manually maintained. Generated clients could reduce drift later, but manual functions keep the code easy to read during the project build-out.
+
+## 38. Frontend Formatting Utilities
+
+The frontend includes `src/lib/format.ts`.
+
+What this is:
+
+It is a small shared formatting module for numbers, date-times, short dates, and readable URLs.
+
+Why it exists:
+
+Dashboards become inconsistent when every component formats dates and numbers differently. Shared formatting keeps the UI polished and makes localization easier later.
+
+How it works:
+
+The module uses `Intl.NumberFormat` and `Intl.DateTimeFormat`, which are browser-native and optimized.
+
+Why this is a good choice:
+
+Using native Intl avoids adding a date library for simple display formatting. It is fast, standard, and enough for the current UI.
+
+Tradeoff:
+
+The locale is currently fixed to English. A future internationalized app should read locale from user preference or Next.js routing.
