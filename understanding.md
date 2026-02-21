@@ -869,3 +869,42 @@ It gives SWR-style behavior without adding another dependency yet. The project c
 Tradeoff:
 
 The cache is per browser tab and disappears on refresh. That is fine for analytics UI performance; it is not meant to be durable storage.
+
+## 37. Frontend API Endpoint Layer
+
+The frontend uses `src/lib/links-api.ts` as its endpoint layer.
+
+What this is:
+
+It is a collection of typed functions for every backend operation the UI needs.
+
+Why it exists:
+
+Components should not know backend URL patterns, cache keys, or invalidation rules. If route strings are scattered across the UI, future backend changes become expensive and error-prone.
+
+How it works:
+
+The endpoint layer provides functions for:
+
+- creating links;
+- reading public metadata;
+- reading owner summary;
+- reading analytics;
+- reading audit events;
+- updating metadata;
+- updating status;
+- building the CSV export URL.
+
+Caching and invalidation:
+
+- read calls use the in-memory request cache;
+- mutations clear related cache prefixes;
+- analytics cache keys include the admin key and query window so different views do not collide.
+
+Why this is a good choice:
+
+It creates a clean boundary between product components and transport details. It also gives one place to introduce future batching, retries, or generated OpenAPI clients.
+
+Tradeoff:
+
+The endpoint layer is manually maintained. Generated clients could reduce drift later, but manual functions keep the code easy to read during the project build-out.
