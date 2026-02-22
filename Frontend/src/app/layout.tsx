@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Shortner",
+  title: {
+    default: "Shortner",
+    template: "%s | Shortner"
+  },
   description: "Production-ready URL shortener with analytics."
 };
 
