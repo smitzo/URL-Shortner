@@ -932,3 +932,27 @@ Using native Intl avoids adding a date library for simple display formatting. It
 Tradeoff:
 
 The locale is currently fixed to English. A future internationalized app should read locale from user preference or Next.js routing.
+
+## 39. Tailwind Class Composition
+
+The frontend uses `src/lib/cn.ts`.
+
+What this is:
+
+It combines `clsx` and `tailwind-merge` into one helper for conditional Tailwind classes.
+
+Why it exists:
+
+Industry-grade Tailwind code often needs conditional styling for states like disabled, loading, active, error, and selected. `clsx` handles conditions, while `tailwind-merge` resolves conflicting Tailwind classes such as two different padding or color utilities.
+
+How it works:
+
+Components call `cn("base classes", condition && "state classes")`. The helper returns a clean class string.
+
+Why this is a good choice:
+
+It keeps components readable and avoids raw CSS. It also prevents subtle style conflicts when variants override base classes.
+
+Tradeoff:
+
+It adds a tiny abstraction, but the pattern is common in Tailwind production apps and pays for itself quickly.
