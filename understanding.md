@@ -985,3 +985,27 @@ It keeps the visual system consistent while preserving native button behavior an
 Tradeoff:
 
 The component is intentionally small. If the design system grows, variants may move into a more formal variant utility.
+
+## 41. Form Field Primitive
+
+The frontend includes `src/components/ui/field.tsx`.
+
+What this is:
+
+It is a reusable input/textarea component with label, hint, error text, and accessible ARIA wiring.
+
+Why it exists:
+
+URL creation and link management both need forms. Consistent field behavior matters because validation errors should be easy to scan, helper text should look consistent, and screen readers need useful relationships between controls and messages.
+
+How it works:
+
+The component renders either an `input` or `textarea` based on `multiline`. It attaches `aria-invalid` and `aria-describedby` when errors or hints exist.
+
+Why this is a good choice:
+
+It keeps forms consistent without introducing a large form library. It also follows the requirement to use Tailwind CSS utilities instead of raw CSS.
+
+Tradeoff:
+
+The component is controlled by parent state. If forms become very complex, a dedicated form library could reduce boilerplate.
