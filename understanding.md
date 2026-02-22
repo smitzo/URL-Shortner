@@ -956,3 +956,32 @@ It keeps components readable and avoids raw CSS. It also prevents subtle style c
 Tradeoff:
 
 It adds a tiny abstraction, but the pattern is common in Tailwind production apps and pays for itself quickly.
+
+## 40. Button UI Primitive
+
+The frontend includes `src/components/ui/button.tsx`.
+
+What this is:
+
+It is a reusable Tailwind-based button component with variants, disabled behavior, optional icons, and loading state.
+
+Why it exists:
+
+Buttons appear throughout the app: create link, copy link, refresh analytics, save metadata, disable link, reactivate link, and export CSV. If each button is hand-styled, the UI becomes inconsistent.
+
+How it works:
+
+The component accepts:
+
+- `variant`: `primary`, `secondary`, `ghost`, or `danger`;
+- `loading`: disables the button and shows a spinner icon;
+- `icon`: displays an icon before the label;
+- normal native button props.
+
+Why this is a good choice:
+
+It keeps the visual system consistent while preserving native button behavior and accessibility. It uses Tailwind utilities only, not raw CSS.
+
+Tradeoff:
+
+The component is intentionally small. If the design system grows, variants may move into a more formal variant utility.
