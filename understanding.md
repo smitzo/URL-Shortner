@@ -1009,3 +1009,28 @@ It keeps forms consistent without introducing a large form library. It also foll
 Tradeoff:
 
 The component is controlled by parent state. If forms become very complex, a dedicated form library could reduce boilerplate.
+
+## 42. Panel and Status Badge Primitives
+
+The frontend includes `Panel` and `StatusBadge` UI primitives.
+
+What these are:
+
+- `Panel`: a compact section container for dashboard surfaces.
+- `StatusBadge`: a semantic visual label for `ACTIVE`, `DISABLED`, and `EXPIRED` links.
+
+Why they exist:
+
+The app has repeated operational surfaces: create form, result panel, recent links, analytics summary, metadata editor, and audit timeline. Panels keep those areas visually consistent. Status badges make link state scannable without forcing users to read full paragraphs.
+
+How they work:
+
+Both components are Tailwind-only. `Panel` accepts title, description, optional action, and children. `StatusBadge` maps backend link status to restrained color classes.
+
+Why this is a good choice:
+
+Operational tools should feel organized and easy to scan. These primitives give structure without turning the app into a marketing landing page.
+
+Tradeoff:
+
+Panels are useful for individual tool surfaces, but page sections should not become nested card stacks. The app keeps panels flat and purposeful.
