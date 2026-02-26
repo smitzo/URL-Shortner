@@ -1201,3 +1201,30 @@ State is kept at the smallest shared level: the dashboard coordinates sibling co
 Tradeoff:
 
 The page is a client component because the create workflow and local queue are interactive. Server components can still be used later for static or authenticated data-loading sections.
+
+## 49. Analytics Admin Key State
+
+The frontend includes `src/hooks/use-admin-key.ts`.
+
+What this is:
+
+It is a client hook for reading, storing, and updating the admin key for a specific short code.
+
+Why it exists:
+
+Analytics and management endpoints require the admin key. Users may arrive from the creation result link with the key in the query string, or they may paste it manually later. The UI needs a consistent way to handle both paths.
+
+How it works:
+
+- reads `adminKey` from the URL query string;
+- falls back to `localStorage` for the specific short code;
+- saves query-provided keys automatically;
+- exposes `hasAdminKey` for simple UI gating.
+
+Why this is a good choice:
+
+It keeps key management out of analytics components. Persisting by code improves usability without adding accounts.
+
+Tradeoff:
+
+`localStorage` is convenient but not secure against a compromised browser. This is acceptable for the anonymous-key model, but authenticated accounts would be better for sensitive production use.
