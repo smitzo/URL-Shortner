@@ -1256,3 +1256,27 @@ It provides the key behavior needed for this app without adding a heavier data-f
 Tradeoff:
 
 The hook is intentionally simple. If the app later needs pagination, background polling, offline mutation queues, or optimistic cache updates across many resources, TanStack Query would be a strong upgrade.
+
+## 51. Analytics Page Shell
+
+The frontend includes the route `src/app/analytics/[code]/page.tsx` and the client dashboard `src/features/analytics/analytics-dashboard.tsx`.
+
+What this is:
+
+It is the management and analytics page for a single short code.
+
+Why it exists:
+
+Creating links is only half of the product. Users also need to understand performance and manage link state after sharing it.
+
+How it works:
+
+The Next.js route extracts the `code` path parameter and renders a client dashboard. The dashboard reads the admin key through `useAdminKey` and gates protected panels until a valid-looking key is present.
+
+Why this is a good choice:
+
+The route itself stays small and server-friendly, while the dashboard owns interactive state. This follows the App Router pattern: use server components for routing and metadata, client components for browser interactivity.
+
+Tradeoff:
+
+The first version gates by key length client-side, while the backend remains the real authority. Invalid keys still fail at the API layer.
