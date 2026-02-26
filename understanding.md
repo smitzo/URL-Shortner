@@ -1228,3 +1228,31 @@ It keeps key management out of analytics components. Persisting by code improves
 Tradeoff:
 
 `localStorage` is convenient but not secure against a compromised browser. This is acceptable for the anonymous-key model, but authenticated accounts would be better for sensitive production use.
+
+## 50. Async Resource Hook
+
+The frontend includes `src/hooks/use-async-resource.ts`.
+
+What this is:
+
+It is a reusable hook for client-side asynchronous data loading.
+
+Why it exists:
+
+Analytics pages need to load several resources: public link metadata, admin summary, analytics data, and audit events. Each has loading, error, refresh, and stale-data behavior. Repeating that state logic in every component would be noisy and inconsistent.
+
+How it works:
+
+- `enabled` gates whether loading should happen;
+- `load` performs the async work;
+- request IDs prevent older responses from overwriting newer responses;
+- the hook distinguishes initial `loading` from later `refreshing`;
+- `refresh` can be called manually.
+
+Why this is a good choice:
+
+It provides the key behavior needed for this app without adding a heavier data-fetching dependency. It also composes with the request cache layer.
+
+Tradeoff:
+
+The hook is intentionally simple. If the app later needs pagination, background polling, offline mutation queues, or optimistic cache updates across many resources, TanStack Query would be a strong upgrade.
