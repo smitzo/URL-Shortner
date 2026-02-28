@@ -18,6 +18,9 @@ const config: Config = {
       },
       boxShadow: {
         soft: "0 18px 45px -24px rgb(15 23 42 / 0.38)"
+      },
+      gridTemplateColumns: {
+        "20": "repeat(20, minmax(0, 1fr))"
       }
     }
   },

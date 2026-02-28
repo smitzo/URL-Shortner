@@ -1304,3 +1304,27 @@ It separates a lightweight summary from full analytics. That mirrors the backend
 Tradeoff:
 
 The panel depends on the admin key. Public metadata could be loaded without a key, but the summary intentionally stays owner-only because it includes click counts.
+
+## 53. Analytics Summary and Daily Trend
+
+The frontend includes `src/features/analytics/analytics-summary.tsx`.
+
+What this is:
+
+It is the main analytics panel showing total clicks, recent event count, tracked days, and a daily click trend.
+
+Why it exists:
+
+Users need a compact visual summary before inspecting detailed breakdowns. A daily trend helps answer whether a link is gaining, losing, or receiving no traffic.
+
+How it works:
+
+The component loads protected analytics through the endpoint layer. It uses the request cache and async resource hook, then renders metrics and Tailwind-based segmented bars for daily clicks.
+
+Why Tailwind bars instead of a chart library here:
+
+The data is simple and the UI should stay lightweight. Segmented bars are readable, responsive, and avoid extra client-side chart complexity. They also avoid inline raw CSS by using a Tailwind grid extension.
+
+Tradeoff:
+
+The bar chart is not as feature-rich as a dedicated chart library. It does not include hover tooltips or zooming, but it is fast and clear for this product phase.
