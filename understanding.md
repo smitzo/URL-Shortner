@@ -1328,3 +1328,27 @@ The data is simple and the UI should stay lightweight. Segmented bars are readab
 Tradeoff:
 
 The bar chart is not as feature-rich as a dedicated chart library. It does not include hover tooltips or zooming, but it is fast and clear for this product phase.
+
+## 54. Analytics Breakdown Grid
+
+The frontend includes `src/features/analytics/breakdown-grid.tsx`.
+
+What this is:
+
+It renders browser, OS, device, and referrer analytics as compact panels.
+
+Why it exists:
+
+Total clicks are useful, but operators also need to understand traffic composition. Browser and OS can reveal compatibility patterns. Device data shows desktop versus mobile behavior. Referrers show where traffic originates.
+
+How it works:
+
+Each breakdown panel receives a list of `{ name, clicks }` items and renders a count plus segmented Tailwind bar. Empty states are explicit.
+
+Why this is a good choice:
+
+The segmented table style is dense, readable, responsive, and avoids raw CSS. It fits an operational dashboard better than decorative chart-heavy layouts.
+
+Tradeoff:
+
+The breakdown grid is descriptive rather than exploratory. Advanced filtering can come later if analytics needs grow.
