@@ -1352,3 +1352,27 @@ The segmented table style is dense, readable, responsive, and avoids raw CSS. It
 Tradeoff:
 
 The breakdown grid is descriptive rather than exploratory. Advanced filtering can come later if analytics needs grow.
+
+## 55. Recent Clicks Table
+
+The frontend includes `src/features/analytics/recent-clicks-table.tsx`.
+
+What this is:
+
+It is a tabular view of the latest click events.
+
+Why it exists:
+
+Aggregates answer "how many" and "what kind." Recent events answer "what just happened." That is useful when validating a newly shared link or investigating traffic spikes.
+
+How it works:
+
+The table renders time, referrer, browser, OS, and device. It uses horizontal overflow for small screens so columns remain readable instead of squeezing into broken layouts.
+
+Why this is a good choice:
+
+Tables are the right UI for event logs. They are scannable, accessible, and familiar in operational tools.
+
+Tradeoff:
+
+The backend currently returns a bounded recent list, not full pagination. That keeps the UI fast and simple; pagination can be added later.
