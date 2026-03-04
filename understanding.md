@@ -1424,3 +1424,27 @@ It reflects the backend safety model: users can update descriptive metadata, but
 Tradeoff:
 
 The component uses a simple status message instead of a global toast system. That keeps the UI dependency-light for now.
+
+## 58. Link Status Controls
+
+The frontend includes `src/features/analytics/status-controls.tsx`.
+
+What this is:
+
+It is the owner-only UI for disabling or reactivating a short link.
+
+Why it exists:
+
+Production users need a non-destructive way to stop traffic. Deleting a link would also remove useful historical context, while disabling preserves analytics and audit history.
+
+How it works:
+
+The component reads the current link status and chooses the next valid action. It calls `updateLinkStatus`, shows a local message, and sends the updated link back to the dashboard.
+
+Why this is a good choice:
+
+The UI mirrors backend constraints. Expired links cannot be reactivated from this simple control because expiration is managed separately through metadata.
+
+Tradeoff:
+
+There is no confirmation modal yet. The action is reversible for active/disabled states, so inline controls are acceptable for this phase.
