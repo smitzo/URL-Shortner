@@ -109,3 +109,5 @@ Manual request examples are available in [docs/api-examples.http](./docs/api-exa
 Backend operations guidance is available in [docs/backend-runbook.md](./docs/backend-runbook.md).
 
 Backend stack rationale is recorded in [docs/decisions/001-backend-stack.md](./docs/decisions/001-backend-stack.md).
+
+Frontend-specific notes are available in [Frontend/README.md](./Frontend/README.md).
