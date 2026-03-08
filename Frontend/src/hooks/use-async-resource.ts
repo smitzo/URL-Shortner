@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type DependencyList } from "react";
 
 type AsyncState<TData> = {
   data: TData | null;
@@ -12,7 +12,7 @@ type AsyncState<TData> = {
 export function useAsyncResource<TData>(
   enabled: boolean,
   load: () => Promise<TData>,
-  dependencies: React.DependencyList
+  dependencies: DependencyList
 ) {
   const requestId = useRef(0);
   const [state, setState] = useState<AsyncState<TData>>({
