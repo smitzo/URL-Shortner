@@ -986,6 +986,8 @@ Tradeoff:
 
 The component is intentionally small. If the design system grows, variants may move into a more formal variant utility.
 
+The frontend also includes a `LinkButton` primitive for navigation actions. This avoids invalid HTML where a Next.js `Link` wraps a real `button`. Navigation controls render as links, form/action controls render as buttons.
+
 ## 41. Form Field Primitive
 
 The frontend includes `src/components/ui/field.tsx`.
