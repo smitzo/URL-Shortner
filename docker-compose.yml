@@ -45,5 +45,18 @@ services:
       - "5000:5000"
     command: sh -c "npx prisma migrate deploy && node dist/src/server.js"
 
+  frontend:
+    build:
+      context: ./Frontend
+    container_name: url-shortner-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:5000
+    ports:
+      - "3000:3000"
+
 volumes:
   postgres-data:
