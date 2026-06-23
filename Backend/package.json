@@ -1,19 +1,63 @@
 {
-  "name": "backend",
+  "name": "@url-shortner/backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "Production-ready URL shortener backend with PostgreSQL analytics.",
   "type": "module",
+  "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "node dist/server.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "seed": "tsx prisma/seed.ts"
   },
-  "keywords": [],
+  "keywords": [
+    "url-shortener",
+    "analytics",
+    "postgresql",
+    "express",
+    "prisma"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "@prisma/client": "^6.10.1",
+    "compression": "^1.8.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10"
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "nanoid": "^5.1.5",
+    "pino": "^9.7.0",
+    "pino-http": "^10.5.0",
+    "ua-parser-js": "^2.0.3",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/compression": "^1.7.5",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^20.19.1",
+    "@types/supertest": "^6.0.3",
+    "eslint": "^9.29.0",
+    "prisma": "^6.10.1",
+    "supertest": "^7.1.1",
+    "tsc-alias": "^1.8.16",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
